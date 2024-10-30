@@ -17,3 +17,12 @@ dependencyResolutionManagement {
 rootProject.name = "Tranquility"
 include(":androidApp")
 include(":shared")
+
+include(":feature:auth")
+include(":feature:home")
+
+include(":core:designsystem") // theming, icons etc
+include(":core:common") // utils
+include(":core:ui") // components
+include(":core:data") // dummy data / fake data
+include(":core:model") // data models
