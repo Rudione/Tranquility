@@ -1,7 +1,8 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
-    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.google.ksp)
 }
 
 android {
@@ -34,6 +35,11 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    applicationVariants.all {
+        addJavaSourceFoldersToModel(
+            File(buildFile, "generated/ksp/$name/kotlin")
+        )
+    }
 }
 
 dependencies {
@@ -42,5 +48,21 @@ dependencies {
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.compose.material3)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(project(":feature:home"))
+    implementation(project(":core:ui"))
     debugImplementation(libs.compose.ui.tooling)
+    implementation(libs.voyager.navigator)
+    implementation(libs.voyager.transitions)
+    implementation(libs.voyager.screenModel)
+    implementation(libs.voyager.koin)
+    implementation(libs.koin.androidx.compose)
+    implementation(libs.coil.compose)
+    implementation(libs.androidx.core.splashscreen)
+    implementation(libs.accompanist.systemuicontroller)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+
+    implementation(project(":core:designsystem"))
+    implementation(project(":feature:signup"))
+    implementation(project(":feature:login"))
 }
