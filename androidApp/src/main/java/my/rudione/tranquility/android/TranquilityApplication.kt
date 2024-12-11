@@ -6,6 +6,7 @@ import my.rudione.home.navigation.HomeNavigation
 import my.rudione.login.navigation.LoginNavigation
 import my.rudione.signup.navigation.SignUpNavigation
 import my.rudione.tranquility.android.di.appModule
+import my.rudione.tranquility.auth.di.getSharedModules
 import my.rudione.ui.SharedScreen
 import org.koin.core.context.startKoin
 
@@ -13,7 +14,7 @@ class TranquilityApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         startKoin {
-            modules(appModule)
+            modules(appModule + getSharedModules())
         }
         ScreenRegistry {
             register<SharedScreen.SignUpScreen> {

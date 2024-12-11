@@ -5,6 +5,6 @@ import my.rudione.signup.SignUpViewModel
 import org.koin.dsl.module
 
 val appModule = module {
-    factory { LoginViewModel() }
-    factory { SignUpViewModel() }
+    factory { LoginViewModel(get()) }
+    factory { SignUpViewModel(get()) }
 }

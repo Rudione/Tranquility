@@ -1,10 +1,13 @@
 package my.rudione.login
 
+import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,9 +16,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -26,6 +31,7 @@ import my.rudione.designsystem.theme.ButtonHeight
 import my.rudione.designsystem.theme.ExtraLargeSpacing
 import my.rudione.designsystem.theme.LargeSpacing
 import my.rudione.designsystem.theme.MediumSpacing
+import my.rudione.designsystem.theme.SmallSpacing
 import my.rudione.ui.components.CustomTextField
 
 @Composable
@@ -91,21 +97,21 @@ fun LoginScreen(
                 Text(text = stringResource(id = my.rudione.designsystem.R.string.login_button_label))
             }
 
-            /*GoToSignup(modifier) {
+            GoToSignup(modifier) {
                 onNavigateToSignup()
-            }*/
+            }
         }
 
-        /*if (uiState.isAuthenticating) {
+        if (uiState.isAuthenticating) {
             CircularProgressIndicator()
-        }*/
+        }
     }
 
-    /*LaunchedEffect(
-        key1 = uiState.authenticationSucceed,
+    LaunchedEffect(
+        key1 = uiState.isAuthSuccess,
         key2 = uiState.authErrorMessage,
         block = {
-            if (uiState.authenticationSucceed) {
+            if (uiState.isAuthSuccess) {
                 onNavigateToHome()
             }
 
@@ -113,5 +119,25 @@ fun LoginScreen(
                 Toast.makeText(context, uiState.authErrorMessage, Toast.LENGTH_SHORT).show()
             }
         }
-    )*/
+    )
+}
+
+@Composable
+fun GoToSignup(
+    modifier: Modifier = Modifier,
+    onNavigateToSignup: () -> Unit
+) {
+    Row(
+        modifier = modifier, horizontalArrangement = Arrangement.spacedBy(
+            SmallSpacing
+        )
+    ) {
+        Text(text = "Don't have an account?", style = MaterialTheme.typography.labelSmall)
+        Text(
+            text = "SignUp",
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = modifier.clickable { onNavigateToSignup() }
+        )
+    }
 }
