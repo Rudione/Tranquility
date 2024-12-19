@@ -48,6 +48,7 @@ fun SignUpScreen(
     onSignUpClick: () -> Unit
 ) {
     val context = LocalContext.current
+
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(
             modifier = modifier

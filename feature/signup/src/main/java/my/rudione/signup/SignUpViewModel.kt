@@ -3,46 +3,57 @@ package my.rudione.signup
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.datastore.core.DataStore
 import cafe.adriel.voyager.core.model.ScreenModel
+import cafe.adriel.voyager.core.model.screenModelScope
+import kotlinx.coroutines.launch
+import my.rudione.common.datastore.UserSettings
+import my.rudione.common.datastore.toUserSettings
 import my.rudione.tranquility.auth.domain.common.Result
 import my.rudione.tranquility.auth.domain.usecase.SignUpUseCase
 
 class SignUpViewModel(
-    private val signUpUseCase: SignUpUseCase
+    private val signUpUseCase: SignUpUseCase,
+    private val dataStore: DataStore<UserSettings>
 ): ScreenModel {
-    private var _uiState by mutableStateOf(SignUpUiState())
-    val uiState: SignUpUiState = _uiState
+    var uiState by mutableStateOf(SignUpUiState())
+        private set
 
-    suspend fun signUp() {
-        _uiState = _uiState.copy(isAuthenticating = true)
+    fun signUp(){
+        screenModelScope.launch {
+            uiState = uiState.copy(isAuthenticating = true)
 
-        val authResultData = signUpUseCase(
-            uiState.username,
-            uiState.email,
-            uiState.password
-        )
+            val authResultData = signUpUseCase(uiState.email, uiState.username, uiState.password)
 
-        _uiState = when (authResultData) {
-            is Result.Success -> _uiState.copy(
-                isAuthenticating = false,
-                isAuthSuccess = true
-            )
-            is Result.Error -> _uiState.copy(
-                isAuthenticating = false,
-                authErrorMessage = authResultData.errorMessage
-            )
+            uiState = when(authResultData){
+                is Result.Error -> {
+                    uiState.copy(
+                        isAuthenticating = false,
+                        authErrorMessage = authResultData.errorMessage
+                    )
+                }
+                is Result.Success -> {
+                    dataStore.updateData {
+                        authResultData.data.toUserSettings()
+                    }
+                    uiState.copy(
+                        isAuthenticating = false,
+                        isAuthSuccess = true
+                    )
+                }
+            }
         }
     }
 
-    fun updateUsername(username: String) {
-        _uiState = uiState.copy(username = username)
+    fun updateUsername(input: String){
+        uiState = uiState.copy(username = input)
     }
 
-    fun updateEmail(email: String) {
-        _uiState = uiState.copy(email = email)
+    fun updateEmail(input: String){
+        uiState = uiState.copy(email = input)
     }
 
-    fun updatePassword(password: String) {
-        _uiState = uiState.copy(password = password)
+    fun updatePassword(input: String){
+        uiState = uiState.copy(password = input)
     }
 }
