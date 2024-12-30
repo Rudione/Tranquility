@@ -1,6 +1,7 @@
 package my.rudione.home.onboarding
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -47,7 +48,12 @@ fun OnBoardingUserItem(
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding(MediumSpacing),
+                .padding(MediumSpacing)
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
+                    shape = MaterialTheme.shapes.medium
+                ),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

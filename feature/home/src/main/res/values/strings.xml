@@ -2,4 +2,6 @@
 <resources>
     <string name="follow">Follow</string>
     <string name="unfollow">Unfollow</string>
+    <string name="onboarding_description">Follow your favorite creators and get updates on their latest content</string>
+    <string name="onboarding_done_button">Done</string>
 </resources>

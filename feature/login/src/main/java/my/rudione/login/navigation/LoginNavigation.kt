@@ -18,22 +18,24 @@ class LoginNavigation : Screen {
         val viewModel: LoginViewModel = koinScreenModel()
         val navigator = LocalNavigator.currentOrThrow
         val postSignUpScreen = rememberScreen(SharedScreen.SignUpScreen)
-        val postLoginScreen = rememberScreen(SharedScreen.LoginScreen)
+        val postHomeScreen = rememberScreen(SharedScreen.HomeScreen)
         val coroutineScope = rememberCoroutineScope()
 
         LoginScreen(
             uiState = viewModel.uiState,
             onEmailChange = viewModel::updateEmail,
             onPasswordChange = viewModel::updatePassword,
+            onSignInClick = viewModel::signIn,
             onNavigateToHome = {
-                navigator.push(postLoginScreen)
-            },
-            onSignInClick = {
                 coroutineScope.launch {
-                    viewModel.signIn()
+                    navigator.push(postHomeScreen)
                 }
             },
-            onNavigateToSignup = { navigator.push(postSignUpScreen) }
+            onNavigateToSignup = {
+                coroutineScope.launch {
+                    navigator.push(postSignUpScreen)
+                }
+            }
         )
     }
 }

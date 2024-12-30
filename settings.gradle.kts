@@ -27,3 +27,4 @@ include(":core:data") // dummy data / fake data
 include(":core:model") // data models
 include(":feature:login")
 include(":feature:signup")
+include(":feature:post")

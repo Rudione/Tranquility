@@ -11,8 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.navigator.Navigator
 import my.rudione.designsystem.TranquilityIcons
 import my.rudione.designsystem.theme.SmallElevation
 import my.rudione.ui.SharedScreen
@@ -20,10 +19,10 @@ import my.rudione.ui.SharedScreen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBar(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navigator: Navigator
 ) {
-    val navigator = LocalNavigator.currentOrThrow
-    val currentDestination = navigator.lastItem
+    val currentDestination = navigator.lastItem as? SharedScreen
 
     Surface(
         modifier = modifier,
@@ -31,11 +30,11 @@ fun AppBar(
     ) {
         TopAppBar(
             title = {
-                Text(text = stringResource(id = getAppBarTitle(currentDestination.key)))
+                Text(text = stringResource(id = getAppBarTitle(currentDestination)))
             },
             modifier = modifier,
             actions = {
-                AnimatedVisibility(visible = currentDestination.key == SharedScreen.HomeScreen.route) {
+                AnimatedVisibility(visible = currentDestination is SharedScreen.HomeScreen) {
                     IconButton(onClick = { /*TODO*/ }) {
                         Icon(
                             painter = painterResource(id = TranquilityIcons.PERSON_CIRCLE_ICON),
@@ -45,7 +44,7 @@ fun AppBar(
                 }
             },
             navigationIcon = {
-                if (shouldShowNavigationIcon(currentDestination.key)) {
+                if (shouldShowNavigationIcon(currentDestination)) {
                     IconButton(onClick = { navigator.pop() }) {
                         Icon(
                             painter = painterResource(id = TranquilityIcons.ROUND_ARROW_BACK),
@@ -58,19 +57,20 @@ fun AppBar(
     }
 }
 
-private fun getAppBarTitle(currentDestinationRoute: String?): Int {
-    return when (currentDestinationRoute) {
-        SharedScreen.LoginScreen.route -> my.rudione.designsystem.R.string.login_destination_title
-        SharedScreen.SignUpScreen.route -> my.rudione.designsystem.R.string.signup_destination_title
-        SharedScreen.HomeScreen.route -> my.rudione.designsystem.R.string.home_destination_title
+private fun getAppBarTitle(currentDestination: SharedScreen?): Int {
+    return when (currentDestination) {
+        is SharedScreen.LoginScreen -> my.rudione.designsystem.R.string.login_destination_title
+        is SharedScreen.SignUpScreen -> my.rudione.designsystem.R.string.signup_destination_title
+        is SharedScreen.HomeScreen -> my.rudione.designsystem.R.string.home_destination_title
+        is SharedScreen.PostDetailScreen -> my.rudione.designsystem.R.string.post_detail_destination_title
         else -> my.rudione.designsystem.R.string.no_destination_title
     }
 }
 
-private fun shouldShowNavigationIcon(currentDestinationRoute: String?): Boolean {
-    return !(currentDestinationRoute == SharedScreen.LoginScreen.route
-            || currentDestinationRoute == SharedScreen.SignUpScreen.route
-            || currentDestinationRoute == SharedScreen.HomeScreen.route
-            || currentDestinationRoute == null
+private fun shouldShowNavigationIcon(currentDestination: SharedScreen?): Boolean {
+    return !(
+            currentDestination is SharedScreen.LoginScreen
+                    || currentDestination is SharedScreen.SignUpScreen
+                    || currentDestination is SharedScreen.HomeScreen
             )
 }

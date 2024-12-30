@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -19,6 +20,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import my.rudione.designsystem.theme.TranquilityTheme
 import my.rudione.home.navigation.HomeNavigation
 import my.rudione.signup.navigation.SignUpNavigation
+import my.rudione.ui.components.AppBar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
@@ -46,9 +48,13 @@ class MainActivity : ComponentActivity() {
                         SignUpNavigation()
                     }
 
-                    Navigator(screens = listOf(startScreen)) { navigator ->
-                        SlideTransition(navigator)
+                    Navigator(screen = startScreen) { navigator ->
+                        Column {
+                            AppBar(navigator = navigator)
+                            SlideTransition(navigator = navigator)
+                        }
                     }
+
 
                 }
             }

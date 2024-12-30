@@ -4,9 +4,10 @@ import android.app.Application
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import my.rudione.home.navigation.HomeNavigation
 import my.rudione.login.navigation.LoginNavigation
+import my.rudione.post.navigation.PostDetailNavigation
 import my.rudione.signup.navigation.SignUpNavigation
 import my.rudione.tranquility.android.di.appModule
-import my.rudione.tranquility.auth.di.getSharedModules
+import my.rudione.tranquility.di.getSharedModules
 import my.rudione.ui.SharedScreen
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -25,6 +26,9 @@ class TranquilityApplication : Application() {
             register<SharedScreen.SignUpScreen> { SignUpNavigation() }
             register<SharedScreen.LoginScreen> { LoginNavigation() }
             register<SharedScreen.HomeScreen> { HomeNavigation() }
+            register<SharedScreen.PostDetailScreen> { provider ->
+                PostDetailNavigation(postId = provider.postId)
+            }
         }
     }
 }

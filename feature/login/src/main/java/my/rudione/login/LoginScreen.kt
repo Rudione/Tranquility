@@ -26,12 +26,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import my.rudione.designsystem.theme.ButtonHeight
 import my.rudione.designsystem.theme.ExtraLargeSpacing
 import my.rudione.designsystem.theme.LargeSpacing
 import my.rudione.designsystem.theme.MediumSpacing
 import my.rudione.designsystem.theme.SmallSpacing
+import my.rudione.designsystem.theme.TranquilityTheme
 import my.rudione.ui.components.CustomTextField
 
 @Composable
@@ -45,7 +47,6 @@ fun LoginScreen(
     onNavigateToSignup: () -> Unit
 ) {
     val context = LocalContext.current
-
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(
             modifier = modifier
@@ -108,10 +109,10 @@ fun LoginScreen(
     }
 
     LaunchedEffect(
-        key1 = uiState.isAuthSuccess,
+        key1 = uiState.authenticationSucceed,
         key2 = uiState.authErrorMessage,
         block = {
-            if (uiState.isAuthSuccess) {
+            if (uiState.authenticationSucceed) {
                 onNavigateToHome()
             }
 
@@ -132,12 +133,27 @@ fun GoToSignup(
             SmallSpacing
         )
     ) {
-        Text(text = "Don't have an account?", style = MaterialTheme.typography.labelSmall)
+        Text(text = "Don't have an account?", style = MaterialTheme.typography.bodyMedium)
         Text(
             text = "SignUp",
-            style = MaterialTheme.typography.labelSmall,
+            style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.primary,
             modifier = modifier.clickable { onNavigateToSignup() }
+        )
+    }
+}
+
+@Preview
+@Composable
+fun LoginScreenPreview() {
+    TranquilityTheme {
+        LoginScreen(
+            uiState = LoginUiState(),
+            onEmailChange = {},
+            onPasswordChange = {},
+            onNavigateToHome = {},
+            onSignInClick = {},
+            onNavigateToSignup = {}
         )
     }
 }

@@ -1,7 +1,7 @@
-package my.rudione.tranquility.auth.di
+package my.rudione.tranquility.di
 
+import my.rudione.tranquility.auth.data.AuthRepositoryImpl
 import my.rudione.tranquility.auth.data.AuthService
-import my.rudione.tranquility.auth.data.repository.AuthRepositoryImpl
 import my.rudione.tranquility.auth.domain.common.provideDispatcher
 import my.rudione.tranquility.auth.domain.repository.AuthRepository
 import my.rudione.tranquility.auth.domain.usecase.SignInUseCase
@@ -13,6 +13,7 @@ private val authModule = module {
     factory { AuthService() }
     factory { SignUpUseCase() }
     factory { SignInUseCase() }
+
 }
 
 private val utilityModule = module {

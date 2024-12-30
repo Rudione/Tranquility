@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
 import my.rudione.common.datastore.UserSettings
 import my.rudione.common.datastore.UserSettingsSerializer
+import my.rudione.home.HomeViewModel
 import my.rudione.login.LoginViewModel
 import my.rudione.signup.SignUpViewModel
 import my.rudione.tranquility.android.MainViewModel
@@ -16,6 +17,7 @@ val appModule = module {
     factory { LoginViewModel(get(), get()) }
     factory { SignUpViewModel(get(), get()) }
     viewModel { MainViewModel(get()) }
+    factory { HomeViewModel() }
 
     single<DataStore<UserSettings>> {
         DataStoreFactory.create(

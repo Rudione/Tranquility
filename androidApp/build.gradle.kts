@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.material)
+    implementation(project(":feature:post"))
     debugImplementation(libs.compose.ui.tooling)
     implementation(libs.voyager.navigator)
     implementation(libs.voyager.transitions)

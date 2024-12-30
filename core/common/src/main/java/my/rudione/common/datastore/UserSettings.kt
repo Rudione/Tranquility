@@ -5,7 +5,7 @@ import my.rudione.tranquility.auth.domain.model.AuthResultData
 
 @Serializable
 data class UserSettings(
-    val id: Int = -1,
+    val id: Long = -1,
     val name: String = "",
     val bio: String = "",
     val avatar: String? = null,

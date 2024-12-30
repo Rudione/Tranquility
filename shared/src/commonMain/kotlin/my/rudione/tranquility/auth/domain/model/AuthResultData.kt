@@ -1,7 +1,7 @@
 package my.rudione.tranquility.auth.domain.model
 
 data class AuthResultData(
-    val id: Int,
+    val id: Long,
     val name: String,
     val bio: String,
     val avatar: String? = null,

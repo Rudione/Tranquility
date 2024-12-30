@@ -7,7 +7,7 @@ data class Post(
     val createdAt: String,
     val likesCount: Int,
     val commentCount: Int,
-    val authorId: Int,
+    val authorId: Long,
     val authorName: String,
     val authorImage: String,
     val isLiked: Boolean = false,
