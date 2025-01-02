@@ -44,6 +44,8 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(project(":core:common"))
     implementation(project(":shared"))
+    implementation(project(":core:designsystem"))
+    implementation(project(":core:ui"))
     debugImplementation(libs.compose.ui.tooling)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
