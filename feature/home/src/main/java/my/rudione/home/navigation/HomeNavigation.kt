@@ -5,16 +5,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import my.rudione.home.HomeRefreshState
 import my.rudione.home.HomeScreen
 import my.rudione.home.HomeViewModel
 import my.rudione.home.PostsUiState
 import my.rudione.home.onboarding.OnBoardingUiState
+import my.rudione.post.navigation.PostDetailNavigation
 
 class HomeNavigation : Screen {
+
+    override val key = "HomeNavigation"
+
     @Composable
     override fun Content() {
         val viewModel: HomeViewModel = koinScreenModel()
+        val navigator = LocalNavigator.currentOrThrow
 
         HomeScreen(
             modifier = Modifier.fillMaxSize(),
@@ -23,7 +30,9 @@ class HomeNavigation : Screen {
             homeRefreshState = HomeRefreshState(),
             onUiAction = {},
             onProfileNavigation = {},
-            onPostDetailNavigation = {},
+            onPostDetailNavigation = { it ->
+                navigator.push(PostDetailNavigation(it.id))
+            },
             fetchData = {
                 viewModel.fetchData()
             }

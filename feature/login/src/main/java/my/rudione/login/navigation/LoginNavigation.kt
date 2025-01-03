@@ -13,6 +13,9 @@ import my.rudione.login.LoginViewModel
 import my.rudione.ui.SharedScreen
 
 class LoginNavigation : Screen {
+
+    override val key = "LoginNavigation"
+
     @Composable
     override fun Content() {
         val viewModel: LoginViewModel = koinScreenModel()

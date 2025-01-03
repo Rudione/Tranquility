@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -27,12 +28,12 @@ fun FollowsButton(
             ButtonDefaults.buttonColors()
         },
         border = if (isOutline){
-            ButtonDefaults.outlinedButtonBorder
+            ButtonDefaults.outlinedButtonBorder()
         }else{
             null
         },
         elevation = ButtonDefaults.elevatedButtonElevation(
-            defaultElevation = 0.dp
+            defaultElevation = 1.dp
         )
     ) {
         Text(
@@ -42,4 +43,14 @@ fun FollowsButton(
             )
         )
     }
+}
+
+@Composable
+@Preview
+fun FollowsButtonPreview() {
+    FollowsButton(
+        text = android.R.string.ok,
+        onClick = {},
+        isOutline = true
+    )
 }

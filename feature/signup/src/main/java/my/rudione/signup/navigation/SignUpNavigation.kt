@@ -17,6 +17,8 @@ import my.rudione.ui.SharedScreen
 
 class SignUpNavigation : Screen {
 
+    override val key = "SignUpNavigation"
+
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @Composable
     override fun Content() {

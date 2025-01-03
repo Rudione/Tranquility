@@ -7,6 +7,7 @@ import my.rudione.common.datastore.UserSettings
 import my.rudione.common.datastore.UserSettingsSerializer
 import my.rudione.home.HomeViewModel
 import my.rudione.login.LoginViewModel
+import my.rudione.post.PostDetailViewModel
 import my.rudione.signup.SignUpViewModel
 import my.rudione.tranquility.android.MainViewModel
 import org.koin.android.ext.koin.androidContext
@@ -18,6 +19,7 @@ val appModule = module {
     factory { SignUpViewModel(get(), get()) }
     viewModel { MainViewModel(get()) }
     factory { HomeViewModel() }
+    factory { PostDetailViewModel() }
 
     single<DataStore<UserSettings>> {
         DataStoreFactory.create(

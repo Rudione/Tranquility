@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -25,8 +24,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color.Companion.Red
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,12 +43,13 @@ import my.rudione.designsystem.theme.LargeSpacing
 import my.rudione.designsystem.theme.LightGray
 import my.rudione.designsystem.theme.MediumSpacing
 import my.rudione.designsystem.theme.TranquilityTheme
+import my.rudione.ui.flyweight.icon.IconFactory
 
 @Composable
 fun PostListItem(
     modifier: Modifier = Modifier,
     post: Post,
-    onPostClick: ((Post) -> Unit)? = null,
+    onPostClick: (Post) -> Unit,
     onProfileClick: (userId: Long) -> Unit,
     onLikeClick: (Post) -> Unit,
     onCommentClick: (Post) -> Unit,
@@ -56,25 +58,16 @@ fun PostListItem(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            //.aspectRatio(ratio = 0.7f)
             .background(color = MaterialTheme.colorScheme.surface)
-            //.clickable { onPostClick(post) }
-            .let { mod ->
-                if (onPostClick != null) {
-                    mod.clickable { onPostClick(post) }.padding(bottom = ExtraLargeSpacing)
-                } else {
-                    mod
-                }
-            }
+            .clickable { onPostClick(post) }
+            .padding(bottom = ExtraLargeSpacing)
     ) {
         PostHeader(
             name = post.authorName,
             profileUrl = post.imageUrl,
             date = post.createdAt,
             onProfileClick = {
-                onProfileClick(
-                    post.authorId
-                )
+                onProfileClick(post.authorId)
             }
         )
 
@@ -119,6 +112,10 @@ fun PostHeader(
     date: String,
     onProfileClick: () -> Unit
 ) {
+    val roundMoreIcon = IconFactory.getIcon(
+        ImageVector.vectorResource(TranquilityIcons.ROUND_MORE_HORIZONTAL)
+    )
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -168,18 +165,17 @@ fun PostHeader(
             modifier = modifier.weight(1f)
         )
 
-        Icon(
-            painter = painterResource(id = TranquilityIcons.ROUND_MORE_HORIZONTAL),
-            contentDescription = null,
-            tint = if (isSystemInDarkTheme()) {
+        roundMoreIcon.Render(
+            color = if (isSystemInDarkTheme()) {
                 DarkGray
             } else {
                 LightGray
-            }
+            },
+            size = 24.dp,
+            modifier = modifier.clickable { onProfileClick() }
         )
     }
 }
-
 
 @Composable
 fun PostLikesRow(
@@ -190,6 +186,20 @@ fun PostLikesRow(
     isPostLiked: Boolean,
     onCommentClick: () -> Unit
 ) {
+    val commentIcon = IconFactory.getIcon(
+        ImageVector.vectorResource(TranquilityIcons.CHAT_ICON_OUTLINED)
+    )
+
+    val likeIcon = if (isPostLiked) {
+        IconFactory.getIcon(
+            ImageVector.vectorResource(TranquilityIcons.LIKE_ICON_FILLED)
+        )
+    } else {
+        IconFactory.getIcon(
+            ImageVector.vectorResource(TranquilityIcons.LIKE_ICON_OUTLINED)
+        )
+    }
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -202,14 +212,10 @@ fun PostLikesRow(
         IconButton(
             onClick = onLikeClick
         ) {
-            Icon(
-                painter = if (isPostLiked) {
-                    painterResource(id = TranquilityIcons.LIKE_ICON_FILLED)
-                } else {
-                    painterResource(id = TranquilityIcons.LIKE_ICON_OUTLINED)
-                },
-                contentDescription = null,
-                tint = if (isPostLiked) Red else DarkGray
+            likeIcon.Render(
+                color = if (isPostLiked) Red else DarkGray,
+                size = 24.dp,
+                modifier = modifier
             )
         }
 
@@ -223,14 +229,14 @@ fun PostLikesRow(
         IconButton(
             onClick = onCommentClick
         ) {
-            Icon(
-                painter = painterResource(id = TranquilityIcons.CHAT_ICON_OUTLINED),
-                contentDescription = null,
-                tint = if (isSystemInDarkTheme()) {
+            commentIcon.Render(
+                color = if (isSystemInDarkTheme()) {
                     DarkGray
                 } else {
                     LightGray
-                }
+                },
+                size = 24.dp,
+                modifier = modifier
             )
         }
 

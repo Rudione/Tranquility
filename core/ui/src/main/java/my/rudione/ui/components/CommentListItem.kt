@@ -9,14 +9,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,6 +26,7 @@ import my.rudione.designsystem.theme.LargeSpacing
 import my.rudione.designsystem.theme.LightGray
 import my.rudione.designsystem.theme.MediumSpacing
 import my.rudione.designsystem.theme.TranquilityTheme
+import my.rudione.ui.flyweight.icon.IconFactory
 
 @Composable
 fun CommentListItem(
@@ -35,6 +35,8 @@ fun CommentListItem(
     onProfileClick: (Long) -> Unit,
     onMoreIconClick: () -> Unit
 ) {
+    val roundMoreIcon = IconFactory.getIcon(ImageVector.vectorResource(id = my.rudione.designsystem.R.drawable.round_more_horizontal))
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -75,14 +77,13 @@ fun CommentListItem(
                         .alignByBaseline()
                         .weight(1f)
                 )
-                Icon(
-                    painter = painterResource(id = my.rudione.designsystem.R.drawable.round_more_horizontal),
-                    contentDescription = null,
-                    tint = if (isSystemInDarkTheme()) {
+                roundMoreIcon.Render(
+                    color = if (isSystemInDarkTheme()) {
                         DarkGray
                     } else {
                         LightGray
                     },
+                    size = 24.dp,
                     modifier = modifier.clickable { onMoreIconClick() }
                 )
             }
@@ -104,77 +105,6 @@ fun CommentListItemPreview() {
                 comment = sampleComments.first(),
                 onProfileClick = {},
                 onMoreIconClick = {}
-            )
-        }
-    }
-}
-
-
-@Composable
-fun CommentItemLayout(
-    modifier: Modifier,
-    image: @Composable () -> Unit,
-    username: @Composable () -> Unit,
-    date: @Composable () -> Unit,
-    moreIcon: @Composable () -> Unit,
-    commentText: @Composable () -> Unit
-) {
-    Layout(
-        contents = listOf(
-            image,
-            username,
-            date,
-            moreIcon,
-            commentText
-        ),
-        modifier = modifier
-            .padding(
-                top = LargeSpacing,
-                bottom = LargeSpacing,
-                start = LargeSpacing,
-                end = MediumSpacing
-            )
-    ) { (imageMeasurables,
-            usernameMeasurables,
-            dateMeasurables,
-            moreIconMeasurables,
-            commentTextMeasurables),
-        constraints ->
-
-        val imagePlaceable = imageMeasurables.first().measure(constraints)
-        val usernamePlaceable = usernameMeasurables.first().measure(constraints)
-        val datePlaceable = dateMeasurables.first().measure(constraints)
-        val moreIconPlaceable = moreIconMeasurables.first().measure(constraints)
-
-        val commentTextConstraints = constraints.copy(
-            maxWidth = constraints.maxWidth - (24.dp.roundToPx() + imagePlaceable.width)
-        )
-        val commentTextPlaceable = commentTextMeasurables.first().measure(commentTextConstraints)
-
-        val totalHeight = maxOf(
-            imagePlaceable.height,
-            (usernamePlaceable.height + commentTextPlaceable.height)
-        )
-
-        layout(width = constraints.maxWidth, height = totalHeight) {
-            imagePlaceable.placeRelative(x = 0, y = 0)
-            usernamePlaceable.placeRelative(
-                x = imagePlaceable.width + (8.dp.roundToPx()),
-                y = 0
-            )
-            datePlaceable.placeRelative(
-                x = imagePlaceable.width + usernamePlaceable.width + (16.dp.roundToPx()),
-                y = 3.dp.roundToPx()
-            )
-
-            moreIconPlaceable.placeRelative(
-                x = (constraints.maxWidth) - (moreIconPlaceable.width),
-                y = 0
-            )
-
-            commentTextPlaceable.place(
-                x = imagePlaceable.width + (8.dp.roundToPx()),
-                y = usernamePlaceable.height + (2.dp.roundToPx())
             )
         }
     }

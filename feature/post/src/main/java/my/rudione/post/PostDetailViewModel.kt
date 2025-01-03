@@ -19,7 +19,7 @@ class PostDetailViewModel: ScreenModel {
     var commentsUiState by mutableStateOf(CommentsUiState())
         private set
 
-    fun fetchData(postId: String) {
+    fun fetchData(postId: Long) {
         screenModelScope.launch {
             postUiState = postUiState.copy(
                 isLoading = true

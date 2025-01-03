@@ -1,7 +1,9 @@
 package my.rudione.common.fake_data
 
+import my.rudione.tranquility.common.domain.model.Post
+
 data class Post(
-    val id: String,
+    val id: Long,
     val text: String,
     val imageUrl: String,
     val createdAt: String,
@@ -17,7 +19,7 @@ data class Post(
 
 val samplePosts = listOf(
     Post(
-        id = "11",
+        id = 11,
         text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
         imageUrl = "https://picsum.photos/400",
         createdAt = "20 min",
@@ -28,7 +30,7 @@ val samplePosts = listOf(
         authorImage = "https://picsum.photos/200"
     ),
     Post(
-        id = "12",
+        id = 12,
         text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
         imageUrl = "https://picsum.photos/400",
         createdAt = "May 03, 2023",
@@ -39,7 +41,7 @@ val samplePosts = listOf(
         authorImage = "https://picsum.photos/200"
     ),
     Post(
-        id = "13",
+        id = 13,
         text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
         imageUrl = "https://picsum.photos/400",
         createdAt = "Apr 12, 2023",
@@ -50,7 +52,7 @@ val samplePosts = listOf(
         authorImage = "https://picsum.photos/200"
     ),
     Post(
-        id = "14",
+        id = 14,
         text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
         imageUrl = "https://picsum.photos/400",
         createdAt = "Mar 31, 2023",
@@ -61,7 +63,7 @@ val samplePosts = listOf(
         authorImage = "https://picsum.photos/200"
     ),
     Post(
-        id = "15",
+        id = 15,
         text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
         imageUrl = "https://picsum.photos/400",
         createdAt = "Jan 30, 2023",
@@ -71,4 +73,32 @@ val samplePosts = listOf(
         authorName = "L. James",
         authorImage = "https://picsum.photos/200"
     ),
+)
+
+fun Post.toFake() = Post(
+    id = postId,
+    text = caption,
+    imageUrl = imageUrl,
+    createdAt = createdAt,
+    likesCount = likesCount,
+    commentCount = commentsCount,
+    authorId = userId,
+    authorName = userName,
+    authorImage = userImageUrl ?: "",
+    isLiked = isLiked,
+    isOwnPost = isOwnPost
+)
+
+fun my.rudione.common.fake_data.Post.toPost() = Post(
+    postId = id,
+    caption = text,
+    imageUrl = imageUrl,
+    createdAt = createdAt,
+    likesCount = likesCount,
+    commentsCount = commentCount,
+    userId = authorId,
+    userName = authorName,
+    userImageUrl = authorImage,
+    isLiked = isLiked,
+    isOwnPost = isOwnPost
 )
