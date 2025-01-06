@@ -6,7 +6,6 @@ import my.rudione.tranquility.common.util.Result
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-
 class SignUpUseCase: KoinComponent {
     private val repository: AuthRepository by inject()
 

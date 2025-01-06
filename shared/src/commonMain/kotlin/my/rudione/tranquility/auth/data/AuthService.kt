@@ -1,9 +1,9 @@
 package my.rudione.tranquility.auth.data
 
+import my.rudione.tranquility.common.data.remote.KtorApi
 import io.ktor.client.call.body
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import my.rudione.tranquility.common.data.remote.KtorApi
 
 internal class AuthService: KtorApi() {
 
