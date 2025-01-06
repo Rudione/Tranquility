@@ -4,18 +4,14 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.datastore.core.DataStore
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.launch
-import my.rudione.common.datastore.UserSettings
-import my.rudione.common.datastore.toUserSettings
 import my.rudione.tranquility.auth.domain.usecase.SignUpUseCase
 import my.rudione.tranquility.common.util.Result
 
 class SignUpViewModel(
     private val signUpUseCase: SignUpUseCase,
-    private val dataStore: DataStore<UserSettings>
 ): ScreenModel {
     var uiState by mutableStateOf(SignUpUiState())
         private set
@@ -39,9 +35,6 @@ class SignUpViewModel(
                     )
                 }
                 is Result.Success -> {
-                    dataStore.updateData {
-                        authResultData.data!!.toUserSettings()
-                    }
                     uiState.copy(
                         isAuthenticating = false,
                         isAuthSuccess = true

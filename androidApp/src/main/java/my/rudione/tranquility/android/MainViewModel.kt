@@ -3,8 +3,8 @@ package my.rudione.tranquility.android
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.map
-import my.rudione.common.datastore.UserSettings
-import my.rudione.common.datastore.toAuthResultData
+import my.rudione.tranquility.common.data.local.UserSettings
+import my.rudione.tranquility.common.data.local.toAuthResultData
 
 class MainViewModel(
     dataStore: DataStore<UserSettings>
