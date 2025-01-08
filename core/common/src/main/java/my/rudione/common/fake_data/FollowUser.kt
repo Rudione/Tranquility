@@ -3,6 +3,7 @@ package my.rudione.common.fake_data
 data class FollowsUser(
     val id: Long,
     val name: String,
+    val bio: String = "Hey there, welcome to my profile!",
     val profileUrl: String,
     val isFollowing: Boolean = false
 )

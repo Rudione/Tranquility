@@ -52,6 +52,7 @@ dependencies {
     implementation(libs.material)
     implementation(project(":feature:post"))
     implementation(project(":feature:profile"))
+    implementation(project(":feature:editprofile"))
     debugImplementation(libs.compose.ui.tooling)
     implementation(libs.voyager.navigator)
     implementation(libs.voyager.transitions)

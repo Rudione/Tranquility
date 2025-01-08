@@ -1,10 +1,14 @@
 package my.rudione.profile.navigation
 
 import androidx.compose.runtime.Composable
+import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import my.rudione.profile.ProfileScreen
 import my.rudione.profile.ProfileViewModel
+import my.rudione.ui.SharedScreen
 
 class ProfileNavigation(
     private val userId: Long
@@ -12,11 +16,15 @@ class ProfileNavigation(
     @Composable
     override fun Content() {
         val viewModel: ProfileViewModel = koinScreenModel()
+        val navigator = LocalNavigator.currentOrThrow
+        val postEditProfileScreen = rememberScreen(SharedScreen.EditProfileScreen(userId))
 
         ProfileScreen(
             userInfoUiState = viewModel.userInfoUiState,
             profilePostsUiState = viewModel.profilePostsUiState,
-            onButtonClick = { },
+            onButtonClick = {
+                navigator.push(postEditProfileScreen)
+            },
             onFollowersClick = { },
             onFollowingClick = { },
             onPostClick = {},

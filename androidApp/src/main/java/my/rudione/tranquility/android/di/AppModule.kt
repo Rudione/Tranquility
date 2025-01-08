@@ -1,5 +1,6 @@
 package my.rudione.tranquility.android.di
 
+import my.rudione.editprofile.EditProfileViewModel
 import my.rudione.home.HomeViewModel
 import my.rudione.login.LoginViewModel
 import my.rudione.post.PostDetailViewModel
@@ -16,4 +17,5 @@ val appModule = module {
     factory { HomeViewModel() }
     factory { PostDetailViewModel() }
     factory { ProfileViewModel() }
+    factory { EditProfileViewModel() }
 }
