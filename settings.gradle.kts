@@ -28,3 +28,4 @@ include(":core:model") // data models
 include(":feature:login")
 include(":feature:signup")
 include(":feature:post")
+include(":feature:profile")

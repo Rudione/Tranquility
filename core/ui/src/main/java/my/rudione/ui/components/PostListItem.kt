@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import my.rudione.common.fake_data.Post
 import my.rudione.common.fake_data.samplePosts
+import my.rudione.common.util.toCurrentUrl
 import my.rudione.designsystem.TranquilityIcons
 import my.rudione.designsystem.theme.DarkGray
 import my.rudione.designsystem.theme.ExtraLargeSpacing
@@ -49,30 +50,39 @@ import my.rudione.ui.flyweight.icon.IconFactory
 fun PostListItem(
     modifier: Modifier = Modifier,
     post: Post,
-    onPostClick: (Post) -> Unit,
+    onPostClick: ((Post) -> Unit)? = null,
     onProfileClick: (userId: Long) -> Unit,
-    onLikeClick: (Post) -> Unit,
-    onCommentClick: (Post) -> Unit,
+    onLikeClick: () -> Unit,
+    onCommentClick: () -> Unit,
     maxLines: Int = Int.MAX_VALUE
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
+            //.aspectRatio(ratio = 0.7f)
             .background(color = MaterialTheme.colorScheme.surface)
-            .clickable { onPostClick(post) }
-            .padding(bottom = ExtraLargeSpacing)
+            //.clickable { onPostClick(post) }
+            .let { mod ->
+                if (onPostClick != null) {
+                    mod.clickable { onPostClick(post) }.padding(bottom = ExtraLargeSpacing)
+                } else {
+                    mod
+                }
+            }
     ) {
         PostHeader(
             name = post.authorName,
-            profileUrl = post.imageUrl,
+            profileUrl = post.authorImage,
             date = post.createdAt,
             onProfileClick = {
-                onProfileClick(post.authorId)
+                onProfileClick(
+                    post.authorId
+                )
             }
         )
 
         AsyncImage(
-            model = post.imageUrl,
+            model = post.imageUrl.toCurrentUrl(),
             contentDescription = null,
             modifier = modifier
                 .fillMaxWidth()
@@ -88,13 +98,13 @@ fun PostListItem(
         PostLikesRow(
             likesCount = post.likesCount,
             commentCount = post.commentCount,
-            onLikeClick = { onLikeClick(post) },
+            onLikeClick = { onLikeClick() },
             isPostLiked = post.isLiked,
-            onCommentClick = { onCommentClick(post) }
+            onCommentClick = { onCommentClick() }
         )
 
         Text(
-            text = post.imageUrl,
+            text = post.text,
             style = MaterialTheme.typography.bodyMedium,
             modifier = modifier.padding(horizontal = LargeSpacing),
             maxLines = maxLines,
@@ -102,7 +112,6 @@ fun PostListItem(
         )
     }
 }
-
 
 @Composable
 fun PostHeader(

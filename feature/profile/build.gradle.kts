@@ -1,31 +1,28 @@
 plugins {
-    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.google.ksp)
 }
 
 android {
-    namespace = "my.rudione.tranquility.android"
+    namespace = "my.rudione.profile"
     compileSdk = 34
+
     defaultConfig {
-        applicationId = "my.rudione.tranquility.android"
         minSdk = 28
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
-    buildFeatures {
-        compose = true
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
+
     buildTypes {
-        getByName("release") {
+        release {
             isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {
@@ -35,40 +32,31 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    applicationVariants.all {
-        addJavaSourceFoldersToModel(
-            File(buildFile, "generated/ksp/$name/kotlin")
-        )
-    }
 }
 
 dependencies {
-    implementation(projects.shared)
+
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.compose.material3)
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.material)
-    implementation(project(":feature:post"))
-    implementation(project(":feature:profile"))
+    implementation(project(":core:common"))
+    implementation(project(":shared"))
+    implementation(project(":core:designsystem"))
+    implementation(project(":core:ui"))
     debugImplementation(libs.compose.ui.tooling)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.voyager.navigator)
     implementation(libs.voyager.transitions)
     implementation(libs.voyager.screenModel)
     implementation(libs.voyager.koin)
     implementation(libs.koin.androidx.compose)
-    implementation(libs.koin.android)
-    implementation(libs.koin.core)
     implementation(libs.coil.compose)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.accompanist.systemuicontroller)
     implementation(libs.androidx.lifecycle.runtime.compose)
-
-    implementation(project(":core:designsystem"))
-    implementation(project(":feature:signup"))
-    implementation(project(":feature:login"))
-    implementation(project(":feature:home"))
-    implementation(project(":core:ui"))
-    implementation(project(":core:common"))
 }

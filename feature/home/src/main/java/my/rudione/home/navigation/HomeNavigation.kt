@@ -13,6 +13,7 @@ import my.rudione.home.HomeViewModel
 import my.rudione.home.PostsUiState
 import my.rudione.home.onboarding.OnBoardingUiState
 import my.rudione.post.navigation.PostDetailNavigation
+import my.rudione.profile.navigation.ProfileNavigation
 
 class HomeNavigation : Screen {
 
@@ -29,7 +30,9 @@ class HomeNavigation : Screen {
             postsFeedUiState = PostsUiState(),
             homeRefreshState = HomeRefreshState(),
             onUiAction = {},
-            onProfileNavigation = {},
+            onProfileNavigation = { it ->
+                navigator.push(ProfileNavigation(it))
+            },
             onPostDetailNavigation = { it ->
                 navigator.push(PostDetailNavigation(it.id))
             },

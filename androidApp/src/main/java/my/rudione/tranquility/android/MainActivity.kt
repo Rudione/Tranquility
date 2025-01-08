@@ -48,14 +48,12 @@ class MainActivity : ComponentActivity() {
                         SignUpNavigation()
                     }
 
-                    Navigator(screen = startScreen) { navigator ->
+                    Navigator(screen = HomeNavigation()) { navigator ->
                         Column {
                             AppBar(navigator = navigator)
                             SlideTransition(navigator = navigator)
                         }
                     }
-
-
                 }
             }
         }

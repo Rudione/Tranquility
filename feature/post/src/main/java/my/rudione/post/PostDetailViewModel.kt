@@ -7,8 +7,6 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import my.rudione.common.fake_data.Comment
-import my.rudione.common.fake_data.Post
 import my.rudione.common.fake_data.sampleComments
 import my.rudione.common.fake_data.samplePosts
 
@@ -45,15 +43,3 @@ class PostDetailViewModel: ScreenModel {
         }
     }
 }
-
-data class PostUiState(
-    val isLoading: Boolean = false,
-    val post: Post? = null,
-    val errorMessage: String? = null
-)
-
-data class CommentsUiState(
-    val isLoading: Boolean = false,
-    val comments: List<Comment> = listOf(),
-    val errorMessage: String? = null
-)

@@ -29,6 +29,9 @@ class TranquilityApplication : Application() {
             register<SharedScreen.PostDetailScreen> { provider ->
                 PostDetailNavigation(postId = provider.id)
             }
+            register<SharedScreen.ProfileScreen> { provider ->
+                PostDetailNavigation(postId = provider.id)
+            }
         }
     }
 }
