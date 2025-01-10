@@ -14,7 +14,7 @@ data class UserSettings(
     val followingCount: Int = 0
 )
 
-fun UserSettings.toAuthResultData(): AuthResultData{
+fun UserSettings.toAuthResultDataFromUserSettings(): AuthResultData {
     return AuthResultData(id, name, bio, avatar, token, followersCount, followingCount)
 }
 

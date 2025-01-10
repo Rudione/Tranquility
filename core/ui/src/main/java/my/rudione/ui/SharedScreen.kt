@@ -9,4 +9,6 @@ sealed class SharedScreen : ScreenProvider {
     data class PostDetailScreen(val id: Long) : SharedScreen()
     data class ProfileScreen(val id: Long) : SharedScreen()
     data class EditProfileScreen(val id: Long) : SharedScreen()
+    data class FollowsScreen(val id: Long) : SharedScreen()
+    data class FollowingScreen(val id: Long) : SharedScreen()
 }

@@ -11,7 +11,7 @@ import io.ktor.http.takeFrom
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
-private const val BASE_URL = "http://192.168.0.103:8081/"
+private const val BASE_URL = "http://192.168.0.107:8080/"
 
 internal abstract class KtorApi {
 
@@ -42,17 +42,3 @@ internal abstract class KtorApi {
         contentType(ContentType.MultiPart.FormData)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

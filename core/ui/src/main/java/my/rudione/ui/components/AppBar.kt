@@ -65,6 +65,8 @@ private fun getAppBarTitle(currentDestination: SharedScreen?): Int {
         is SharedScreen.ProfileScreen -> my.rudione.designsystem.R.string.profile_destination_title
         is SharedScreen.PostDetailScreen -> my.rudione.designsystem.R.string.post_detail_destination_title
         is SharedScreen.EditProfileScreen -> my.rudione.designsystem.R.string.edit_profile_destination_title
+        is SharedScreen.FollowsScreen -> my.rudione.designsystem.R.string.followers_text
+        is SharedScreen.FollowingScreen -> my.rudione.designsystem.R.string.following_text
         else -> my.rudione.designsystem.R.string.no_destination_title
     }
 }

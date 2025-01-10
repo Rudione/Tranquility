@@ -50,9 +50,6 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.material)
-    implementation(project(":feature:post"))
-    implementation(project(":feature:profile"))
-    implementation(project(":feature:editprofile"))
     debugImplementation(libs.compose.ui.tooling)
     implementation(libs.voyager.navigator)
     implementation(libs.voyager.transitions)
@@ -67,9 +64,13 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
 
     implementation(project(":core:designsystem"))
+    implementation(project(":core:ui"))
+    implementation(project(":core:common"))
+
     implementation(project(":feature:signup"))
     implementation(project(":feature:login"))
     implementation(project(":feature:home"))
-    implementation(project(":core:ui"))
-    implementation(project(":core:common"))
+    implementation(project(":feature:post"))
+    implementation(project(":feature:profile"))
+    implementation(project(":feature:editprofile"))
 }

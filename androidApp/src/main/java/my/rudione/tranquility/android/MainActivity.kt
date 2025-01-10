@@ -5,30 +5,49 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import cafe.adriel.voyager.navigator.Navigator
-import cafe.adriel.voyager.transitions.SlideTransition
+import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import my.rudione.designsystem.theme.TranquilityTheme
 import my.rudione.home.navigation.HomeNavigation
+import my.rudione.login.navigation.LoginNavigation
 import my.rudione.signup.navigation.SignUpNavigation
-import my.rudione.ui.components.AppBar
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
-    private val viewModel: MainViewModel by viewModel()
+    private val viewModel: MainViewModel by inject()
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+
+        var uiState: MainActivityUiState by mutableStateOf(MainActivityUiState.Loading)
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState
+                    .onEach {
+                        uiState = it
+                    }
+                    .collect()
+            }
+        }
+
+        splashScreen.setKeepOnScreenCondition {
+            uiState == MainActivityUiState.Loading
+        }
 
         setContent {
             TranquilityTheme {
@@ -36,33 +55,31 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val tokenState by viewModel.authState.collectAsStateWithLifecycle(initialValue = "")
                     val systemUiController = rememberSystemUiController()
                     val isDarkTheme = isSystemInDarkTheme()
 
                     UpdateStatusBar(systemUiController, isDarkTheme)
 
-                    val startScreen = if (tokenState.isNotEmpty()) {
-                        HomeNavigation()
-                    } else {
-                        SignUpNavigation()
+                    val startScreen = when (uiState) {
+                        is MainActivityUiState.Success -> {
+                            if ((uiState as MainActivityUiState.Success).currentUser.token.isNotEmpty()) {
+                                HomeNavigation()
+                            } else {
+                                LoginNavigation()
+                            }
+                        }
+                        else -> SignUpNavigation()
                     }
 
-                    Navigator(screen = HomeNavigation()) { navigator ->
-                        Column {
-                            AppBar(navigator = navigator)
-                            SlideTransition(navigator = navigator)
-                        }
-                    }
+                    Navigator(screen = startScreen)
                 }
             }
         }
-
     }
 }
 
 @Composable
-private fun UpdateStatusBar(systemUiController: com.google.accompanist.systemuicontroller.SystemUiController, isDarkTheme: Boolean) {
+private fun UpdateStatusBar(systemUiController: SystemUiController, isDarkTheme: Boolean) {
     val statusBarColor = if (isDarkTheme) {
         MaterialTheme.colorScheme.surface
     } else {

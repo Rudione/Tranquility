@@ -7,13 +7,12 @@ import my.rudione.post.PostDetailViewModel
 import my.rudione.profile.ProfileViewModel
 import my.rudione.signup.SignUpViewModel
 import my.rudione.tranquility.android.MainViewModel
-import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val appModule = module {
     factory { LoginViewModel(get()) }
     factory { SignUpViewModel(get()) }
-    viewModel { MainViewModel(get()) }
+    factory { MainViewModel(get()) }
     factory { HomeViewModel() }
     factory { PostDetailViewModel() }
     factory { ProfileViewModel() }

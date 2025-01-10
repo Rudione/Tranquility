@@ -7,7 +7,6 @@ import my.rudione.home.navigation.HomeNavigation
 import my.rudione.login.navigation.LoginNavigation
 import my.rudione.post.navigation.PostDetailNavigation
 import my.rudione.signup.navigation.SignUpNavigation
-import my.rudione.editprofile.navigation.EditProfileNavigation
 import my.rudione.tranquility.android.di.appModule
 import my.rudione.tranquility.di.getSharedModules
 import my.rudione.ui.SharedScreen
@@ -35,7 +34,13 @@ class TranquilityApplication : Application() {
                 PostDetailNavigation(postId = provider.id)
             }
             register<SharedScreen.EditProfileScreen> { provider ->
-                EditProfileNavigation(profileId = provider.id)
+                EditProfileNavigation(userId = provider.id)
+            }
+            register<SharedScreen.FollowsScreen> { provider ->
+                EditProfileNavigation(userId = provider.id)
+            }
+            register<SharedScreen.FollowingScreen> { provider ->
+                EditProfileNavigation(userId = provider.id)
             }
         }
     }

@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import my.rudione.tranquility.common.data.local.UserPreferences
 import my.rudione.tranquility.common.data.local.UserSettings
 
+
 internal class IOSUserPreferences(
     private val dataStore: DataStore<Preferences>
 ): UserPreferences{

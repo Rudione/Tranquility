@@ -18,6 +18,8 @@ class ProfileNavigation(
         val viewModel: ProfileViewModel = koinScreenModel()
         val navigator = LocalNavigator.currentOrThrow
         val postEditProfileScreen = rememberScreen(SharedScreen.EditProfileScreen(userId))
+        val postFollowsScreen = rememberScreen(SharedScreen.FollowsScreen(userId))
+        val postFollowingScreen = rememberScreen(SharedScreen.FollowingScreen(userId))
 
         ProfileScreen(
             userInfoUiState = viewModel.userInfoUiState,
@@ -25,8 +27,8 @@ class ProfileNavigation(
             onButtonClick = {
                 navigator.push(postEditProfileScreen)
             },
-            onFollowersClick = { },
-            onFollowingClick = { },
+            onFollowersClick = { navigator.push(postFollowsScreen) },
+            onFollowingClick = { navigator.push(postFollowingScreen) },
             onPostClick = {},
             onLikeClick = {},
             onCommentClick = {},
