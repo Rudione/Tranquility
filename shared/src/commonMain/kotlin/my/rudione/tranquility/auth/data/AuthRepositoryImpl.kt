@@ -1,13 +1,12 @@
 package my.rudione.tranquility.auth.data
 
+import kotlinx.coroutines.withContext
 import my.rudione.tranquility.auth.domain.model.AuthResultData
 import my.rudione.tranquility.auth.domain.repository.AuthRepository
 import my.rudione.tranquility.common.data.local.UserPreferences
 import my.rudione.tranquility.common.data.local.toUserSettings
-import my.rudione.tranquility.common.data.local.toAuthResultDataFromUserSettings
 import my.rudione.tranquility.common.util.DispatcherProvider
 import my.rudione.tranquility.common.util.Result
-import kotlinx.coroutines.withContext
 
 internal class AuthRepositoryImpl(
     private val dispatcher: DispatcherProvider,

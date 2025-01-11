@@ -7,17 +7,24 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import my.rudione.common.fake_data.FollowsUser
-import my.rudione.common.fake_data.Post
-import my.rudione.common.fake_data.samplePosts
-import my.rudione.common.fake_data.sampleUsers
 import my.rudione.home.onboarding.OnBoardingUiState
+import my.rudione.tranquility.common.domain.model.FollowsUser
+import my.rudione.tranquility.common.domain.model.Post
+import my.rudione.tranquility.common.util.Result
+import my.rudione.tranquility.follows.domain.usecase.FollowOrUnfollowUseCase
+import my.rudione.tranquility.follows.domain.usecase.GetFollowableUsersUseCase
 
-class HomeViewModel : ScreenModel {
-    var postsUiState by mutableStateOf(PostsUiState())
+class HomeViewModel(
+    private val getFollowableUsersUseCase: GetFollowableUsersUseCase,
+    private val followOrUnfollowUseCase: FollowOrUnfollowUseCase
+) : ScreenModel {
+    var postsFeedUiState by mutableStateOf(PostsFeedUiState())
         private set
 
     var onBoardingUiState by mutableStateOf(OnBoardingUiState())
+        private set
+
+    var homeRefreshState by mutableStateOf(HomeRefreshState())
         private set
 
     init {
@@ -25,31 +32,94 @@ class HomeViewModel : ScreenModel {
     }
 
     fun fetchData() {
-        onBoardingUiState = onBoardingUiState.copy(isLoading = true)
-        postsUiState = postsUiState.copy(isLoading = true)
+        homeRefreshState = homeRefreshState.copy(isRefreshing = true)
 
         screenModelScope.launch {
             delay(1000)
 
-            onBoardingUiState = onBoardingUiState.copy(
+            val users = getFollowableUsersUseCase()
+            handleOnBoardingResult(users)
+            postsFeedUiState = postsFeedUiState.copy(
                 isLoading = false,
-                users = sampleUsers,
-                errorMessage = null,
-                shouldShowOnBoarding = true
-            )
-
-            postsUiState = postsUiState.copy(
-                isLoading = false,
-                posts = samplePosts,
+                post = postsFeedUiState.post,
                 errorMessage = null
             )
+            homeRefreshState = homeRefreshState.copy(isRefreshing = false)
+
+        }
+    }
+
+    private fun handleOnBoardingResult(result: Result<List<FollowsUser>>) {
+        when (result) {
+            is Result.Error -> Unit
+
+            is Result.Success -> {
+                result.data?.let { followsUsers ->
+                    onBoardingUiState = onBoardingUiState.copy(
+                        shouldShowOnBoarding = followsUsers.isNotEmpty(),
+                        users = followsUsers
+                    )
+                }
+            }
+        }
+    }
+
+    private fun followUser(followsUser: FollowsUser) {
+        screenModelScope.launch {
+            val result = followOrUnfollowUseCase(
+                followedUserId = followsUser.id,
+                shouldFollow = !followsUser.isFollowing
+            )
+
+            onBoardingUiState = onBoardingUiState.copy(
+                users = onBoardingUiState.users.map {
+                    if (it.id == followsUser.id) {
+                        it.copy(isFollowing = !followsUser.isFollowing)
+                    } else it
+                }
+            )
+
+            when (result) {
+                is Result.Error -> {
+                    onBoardingUiState = onBoardingUiState.copy(
+                        users = onBoardingUiState.users.map {
+                            if (it.id == followsUser.id) {
+                                it.copy(isFollowing = followsUser.isFollowing)
+                            } else it
+                        }
+                    )
+                }
+
+                is Result.Success -> Unit
+            }
+        }
+    }
+
+    private fun dismissOnboarding() {
+        val hasFollowing = onBoardingUiState.users.any { it.isFollowing }
+        if (!hasFollowing) {
+            //TODO tell the user they need to follow at least one person
+        } else {
+            onBoardingUiState =
+                onBoardingUiState.copy(shouldShowOnBoarding = false, users = emptyList())
+            fetchData()
+        }
+    }
+
+    fun onUiAction(uiAction: HomeUiAction) {
+        when (uiAction) {
+            is HomeUiAction.FollowUserAction -> followUser(uiAction.user)
+            HomeUiAction.LoadMorePostsAction -> Unit
+            is HomeUiAction.PostLikeAction -> Unit
+            HomeUiAction.RefreshAction -> fetchData()
+            HomeUiAction.RemoveOnboardingAction -> dismissOnboarding()
         }
     }
 }
 
-data class PostsUiState(
+data class PostsFeedUiState(
     val isLoading: Boolean = false,
-    val posts: List<Post> = listOf(),
+    val post: List<Post> = listOf(),
     val errorMessage: String? = null,
     val endReached: Boolean = false
 )

@@ -10,7 +10,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import my.rudione.home.HomeRefreshState
 import my.rudione.home.HomeScreen
 import my.rudione.home.HomeViewModel
-import my.rudione.home.PostsUiState
+import my.rudione.home.PostsFeedUiState
 import my.rudione.home.onboarding.OnBoardingUiState
 import my.rudione.post.navigation.PostDetailNavigation
 import my.rudione.profile.navigation.ProfileNavigation
@@ -25,20 +25,12 @@ class HomeNavigation : Screen {
         val navigator = LocalNavigator.currentOrThrow
 
         HomeScreen(
-            modifier = Modifier.fillMaxSize(),
-            onBoardingUiState = OnBoardingUiState(),
-            postsFeedUiState = PostsUiState(),
-            homeRefreshState = HomeRefreshState(),
-            onUiAction = {},
-            onProfileNavigation = { it ->
-                navigator.push(ProfileNavigation(it))
-            },
-            onPostDetailNavigation = { it ->
-                navigator.push(PostDetailNavigation(it.id))
-            },
-            fetchData = {
-                viewModel.fetchData()
-            }
+            onBoardingUiState = viewModel.onBoardingUiState,
+            postsFeedUiState = viewModel.postsFeedUiState,
+            homeRefreshState = viewModel.homeRefreshState,
+            onUiAction = { viewModel.onUiAction(it)},
+            onProfileNavigation = { navigator.push(ProfileNavigation(it)) },
+            onPostDetailNavigation = { navigator.push(PostDetailNavigation(it.postId)) }
         )
     }
 }

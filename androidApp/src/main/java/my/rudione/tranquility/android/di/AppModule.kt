@@ -13,7 +13,7 @@ val appModule = module {
     factory { LoginViewModel(get()) }
     factory { SignUpViewModel(get()) }
     factory { MainViewModel(get()) }
-    factory { HomeViewModel() }
+    factory { HomeViewModel(get(), get()) }
     factory { PostDetailViewModel() }
     factory { ProfileViewModel() }
     factory { EditProfileViewModel() }

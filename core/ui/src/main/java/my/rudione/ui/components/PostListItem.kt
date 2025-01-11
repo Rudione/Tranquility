@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -34,8 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import my.rudione.common.fake_data.Post
-import my.rudione.common.fake_data.samplePosts
+import my.rudione.common.fake_data.sampleSamplePosts
 import my.rudione.common.util.toCurrentUrl
 import my.rudione.designsystem.TranquilityIcons
 import my.rudione.designsystem.theme.DarkGray
@@ -44,6 +44,7 @@ import my.rudione.designsystem.theme.LargeSpacing
 import my.rudione.designsystem.theme.LightGray
 import my.rudione.designsystem.theme.MediumSpacing
 import my.rudione.designsystem.theme.TranquilityTheme
+import my.rudione.tranquility.common.domain.model.Post
 import my.rudione.ui.flyweight.icon.IconFactory
 
 @Composable
@@ -52,8 +53,8 @@ fun PostListItem(
     post: Post,
     onPostClick: ((Post) -> Unit)? = null,
     onProfileClick: (userId: Long) -> Unit,
-    onLikeClick: () -> Unit,
-    onCommentClick: () -> Unit,
+    onLikeClick: (Post) -> Unit,
+    onCommentClick: (Post) -> Unit,
     maxLines: Int = Int.MAX_VALUE
 ) {
     Column(
@@ -71,12 +72,12 @@ fun PostListItem(
             }
     ) {
         PostHeader(
-            name = post.authorName,
-            profileUrl = post.authorImage,
+            name = post.userName,
+            profileUrl = post.userImageUrl,
             date = post.createdAt,
             onProfileClick = {
                 onProfileClick(
-                    post.authorId
+                    post.userId
                 )
             }
         )
@@ -89,22 +90,22 @@ fun PostListItem(
                 .aspectRatio(ratio = 1.0f),
             contentScale = ContentScale.Crop,
             placeholder = if (isSystemInDarkTheme()) {
-                painterResource(id = TranquilityIcons.DARK_IMAGE_PLACE_HOLDER)
+                painterResource(id = my.rudione.designsystem.R.drawable.dark_image_placeholder)
             } else {
-                painterResource(id = TranquilityIcons.LIGHT_IMAGE_PLACE_HOLDER)
+                painterResource(id = my.rudione.designsystem.R.drawable.light_image_placeholder)
             }
         )
 
         PostLikesRow(
             likesCount = post.likesCount,
-            commentCount = post.commentCount,
-            onLikeClick = { onLikeClick() },
+            commentCount = post.commentsCount,
+            onLikeClick = { onLikeClick(post) },
             isPostLiked = post.isLiked,
-            onCommentClick = { onCommentClick() }
+            onCommentClick = { onCommentClick(post) }
         )
 
         Text(
-            text = post.text,
+            text = post.caption,
             style = MaterialTheme.typography.bodyMedium,
             modifier = modifier.padding(horizontal = LargeSpacing),
             maxLines = maxLines,
@@ -112,6 +113,7 @@ fun PostListItem(
         )
     }
 }
+
 
 @Composable
 fun PostHeader(
@@ -121,10 +123,6 @@ fun PostHeader(
     date: String,
     onProfileClick: () -> Unit
 ) {
-    val roundMoreIcon = IconFactory.getIcon(
-        ImageVector.vectorResource(TranquilityIcons.ROUND_MORE_HORIZONTAL)
-    )
-
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -137,7 +135,7 @@ fun PostHeader(
     ) {
         CircleImage(
             modifier = modifier.size(30.dp),
-            url = profileUrl,
+            url = profileUrl?.toCurrentUrl(),
             onClick = onProfileClick
         )
 
@@ -174,14 +172,14 @@ fun PostHeader(
             modifier = modifier.weight(1f)
         )
 
-        roundMoreIcon.Render(
-            color = if (isSystemInDarkTheme()) {
+        Icon(
+            painter = painterResource(id = my.rudione.designsystem.R.drawable.round_more_horizontal),
+            contentDescription = null,
+            tint = if (isSystemInDarkTheme()) {
                 DarkGray
             } else {
                 LightGray
-            },
-            size = 24.dp,
-            modifier = modifier.clickable { onProfileClick() }
+            }
         )
     }
 }
@@ -263,7 +261,7 @@ private fun PostListItemPreview() {
     TranquilityTheme {
         Surface(color = MaterialTheme.colorScheme.surface) {
             PostListItem(
-                post = samplePosts.first(),
+                post = sampleSamplePosts.first().toDomainPost(),
                 onPostClick = {},
                 onProfileClick = {},
                 onCommentClick = {},

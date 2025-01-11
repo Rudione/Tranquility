@@ -35,7 +35,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import my.rudione.common.fake_data.Post
+import my.rudione.common.fake_data.SamplePost
 import my.rudione.designsystem.theme.LargeSpacing
 import my.rudione.designsystem.theme.MediumSpacing
 import my.rudione.designsystem.theme.SmallSpacing
@@ -52,7 +52,7 @@ fun ProfileScreen(
     onButtonClick: () -> Unit,
     onFollowersClick: () -> Unit,
     onFollowingClick: () -> Unit,
-    onPostClick: (Post) -> Unit,
+    onPostClick: (SamplePost) -> Unit,
     onLikeClick: () -> Unit,
     onCommentClick: () -> Unit,
     fetchData: () -> Unit
@@ -80,15 +80,15 @@ fun ProfileScreen(
             }
 
             items(
-                items = profilePostsUiState.posts,
+                items = profilePostsUiState.samplePosts,
                 key = { post -> post.id }
             ) {
                 PostListItem(
-                    post = it,
-                    onPostClick = onPostClick,
+                    post = it.toDomainPost(),
+                    onPostClick = {},
                     onProfileClick = {},
-                    onLikeClick = onLikeClick,
-                    onCommentClick = onCommentClick
+                    onLikeClick = {},
+                    onCommentClick = {}
                 )
             }
         }

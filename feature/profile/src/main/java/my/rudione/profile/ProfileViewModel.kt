@@ -7,7 +7,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import my.rudione.common.fake_data.samplePosts
+import my.rudione.common.fake_data.sampleSamplePosts
 import my.rudione.common.fake_data.sampleProfiles
 
 class ProfileViewModel: ScreenModel {
@@ -29,7 +29,7 @@ class ProfileViewModel: ScreenModel {
 
             profilePostsUiState = profilePostsUiState.copy(
                 isLoading = false,
-                posts = samplePosts
+                samplePosts = sampleSamplePosts
             )
         }
     }

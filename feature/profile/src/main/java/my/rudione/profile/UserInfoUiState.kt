@@ -1,6 +1,6 @@
 package my.rudione.profile
 
-import my.rudione.common.fake_data.Post
+import my.rudione.common.fake_data.SamplePost
 import my.rudione.common.fake_data.Profile
 
 data class UserInfoUiState(
@@ -11,6 +11,6 @@ data class UserInfoUiState(
 
 data class ProfilePostsUiState(
     val isLoading: Boolean = true,
-    val posts: List<Post> = emptyList(),
+    val samplePosts: List<SamplePost> = emptyList(),
     var errorMessage: String? = null
 )

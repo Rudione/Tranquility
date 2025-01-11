@@ -1,6 +1,6 @@
 package my.rudione.home.onboarding
 
-import my.rudione.common.fake_data.FollowsUser
+import my.rudione.tranquility.common.domain.model.FollowsUser
 
 data class OnBoardingUiState(
     val isLoading: Boolean = false,

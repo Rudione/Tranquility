@@ -19,11 +19,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import my.rudione.common.fake_data.FollowsUser
+import my.rudione.common.fake_data.sampleUsers
 import my.rudione.designsystem.theme.LargeSpacing
 import my.rudione.designsystem.theme.MediumSpacing
 import my.rudione.designsystem.theme.TranquilityTheme
 import my.rudione.home.R
+import my.rudione.tranquility.common.domain.model.FollowsUser
 
 @Composable
 fun OnBoardingSection(
@@ -111,26 +112,7 @@ fun UsersRow(
 fun OnBoardingPreview() {
     TranquilityTheme {
         OnBoardingSection(
-            users = listOf(
-                FollowsUser(
-                    id = 1,
-                    name = "Denis Rudenko",
-                    profileUrl = "https://avatars.githubusercontent.com/u/1026365?v=4",
-                    isFollowing = false
-                ),
-                FollowsUser(
-                    id = 2,
-                    name = "John Doe",
-                    profileUrl = "https://avatars.githubusercontent.com/u/1026365?v=4",
-                    isFollowing = true
-                ),
-                FollowsUser(
-                    id = 3,
-                    name = "Jane Doe",
-                    profileUrl = "https://avatars.githubusercontent.com/u/1026365?v=4",
-                    isFollowing = false
-                )
-            ),
+            users = sampleUsers.map { it.toFollowsUser() },
             onUserClick = {},
             onFollowsButtonClick = { _, _ -> },
             onBoardingFinish = {}

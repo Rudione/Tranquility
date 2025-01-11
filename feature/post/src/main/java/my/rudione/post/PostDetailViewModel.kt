@@ -8,7 +8,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import my.rudione.common.fake_data.sampleComments
-import my.rudione.common.fake_data.samplePosts
+import my.rudione.common.fake_data.sampleSamplePosts
 
 class PostDetailViewModel: ScreenModel {
     var postUiState by mutableStateOf(PostUiState())
@@ -31,7 +31,7 @@ class PostDetailViewModel: ScreenModel {
 
             postUiState = postUiState.copy(
                 isLoading = false,
-                post = samplePosts.find {
+                samplePost = sampleSamplePosts.find {
                     it.id == postId
                 }
             )

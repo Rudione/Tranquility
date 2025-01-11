@@ -23,7 +23,7 @@ class FollowsViewModel: ScreenModel {
 
             delay(1000)
 
-            uiState = uiState.copy(isLoading = false, followsUsers = sampleUsers)
+            uiState = uiState.copy(isLoading = false, sampleFollowsUsers = sampleUsers)
         }
     }
 }

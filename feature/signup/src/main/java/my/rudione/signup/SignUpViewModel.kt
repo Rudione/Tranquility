@@ -1,6 +1,5 @@
 package my.rudione.signup
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -11,7 +10,7 @@ import my.rudione.tranquility.auth.domain.usecase.SignUpUseCase
 import my.rudione.tranquility.common.util.Result
 
 class SignUpViewModel(
-    private val signUpUseCase: SignUpUseCase,
+    private val signUpUseCase: SignUpUseCase
 ): ScreenModel {
     var uiState by mutableStateOf(SignUpUiState())
         private set
@@ -20,12 +19,7 @@ class SignUpViewModel(
         screenModelScope.launch {
             uiState = uiState.copy(isAuthenticating = true)
 
-            val authResultData = signUpUseCase(
-                name = uiState.username,
-                email = uiState.email,
-                password = uiState.password
-            )
-            Log.d("SignUpViewModel", "signUp: ${authResultData.message}")
+            val authResultData = signUpUseCase(uiState.email, uiState.username, uiState.password)
 
             uiState = when(authResultData){
                 is Result.Error -> {
@@ -41,22 +35,18 @@ class SignUpViewModel(
                     )
                 }
             }
-            Log.d("SignUpViewModel", "signUp: ${authResultData.message}, ${uiState.authErrorMessage}")
         }
     }
 
     fun updateUsername(input: String){
         uiState = uiState.copy(username = input)
-        Log.d("UpdateUsername", "updateUsername: $uiState")
     }
 
     fun updateEmail(input: String){
         uiState = uiState.copy(email = input)
-        Log.d("UpdateEmail", "updateEmail: $uiState")
     }
 
     fun updatePassword(input: String){
         uiState = uiState.copy(password = input)
-        Log.d("UpdatePassword", "updatePassword: $uiState")
     }
 }

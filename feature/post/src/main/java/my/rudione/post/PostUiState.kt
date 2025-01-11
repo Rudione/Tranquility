@@ -1,11 +1,11 @@
 package my.rudione.post
 
 import my.rudione.common.fake_data.Comment
-import my.rudione.common.fake_data.Post
+import my.rudione.common.fake_data.SamplePost
 
 data class PostUiState(
     val isLoading: Boolean = false,
-    val post: Post? = null,
+    val samplePost: SamplePost? = null,
     val errorMessage: String? = null
 )
 

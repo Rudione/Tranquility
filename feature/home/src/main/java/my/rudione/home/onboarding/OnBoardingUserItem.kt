@@ -22,11 +22,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import my.rudione.common.fake_data.FollowsUser
+import my.rudione.common.fake_data.sampleUsers
+import my.rudione.common.util.toCurrentUrl
 import my.rudione.designsystem.theme.MediumSpacing
 import my.rudione.designsystem.theme.SmallSpacing
 import my.rudione.designsystem.theme.TranquilityTheme
 import my.rudione.home.R
+import my.rudione.tranquility.common.domain.model.FollowsUser
 import my.rudione.ui.components.CircleImage
 import my.rudione.ui.components.FollowsButton
 
@@ -59,7 +61,7 @@ fun OnBoardingUserItem(
         ) {
             CircleImage(
                 modifier = modifier.size(50.dp),
-                url = followsUser.profileUrl,
+                url = followsUser.imageUrl?.toCurrentUrl(),
                 onClick = {}
             )
 
@@ -80,7 +82,7 @@ fun OnBoardingUserItem(
                     .heightIn(min = 30.dp),
                 text = if (isFollowing) R.string.follow else R.string.unfollow,
                 onClick = { onFollowButtonClick(isFollowing, followsUser) },
-                isOutline = !isFollowing
+                isOutline = followsUser.isFollowing
             )
         }
     }
@@ -91,11 +93,7 @@ fun OnBoardingUserItem(
 private fun OnBoardingUserPreview() {
     TranquilityTheme {
         OnBoardingUserItem(
-            followsUser = FollowsUser(
-                id = 1,
-                name = "Denis Rudenko",
-                profileUrl = "https://picsum.photos/200"
-            ),
+            followsUser = sampleUsers.first().toFollowsUser(),
             onUserClick = {},
             onFollowButtonClick = {_, _ -> 1 })
     }

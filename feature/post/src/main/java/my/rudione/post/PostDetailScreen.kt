@@ -23,7 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import my.rudione.common.fake_data.Comment
 import my.rudione.common.fake_data.sampleComments
-import my.rudione.common.fake_data.samplePosts
+import my.rudione.common.fake_data.sampleSamplePosts
 import my.rudione.common.util.Constants
 import my.rudione.designsystem.theme.LargeSpacing
 import my.rudione.ui.components.CommentListItem
@@ -43,7 +43,7 @@ fun PostDetailScreen(
         Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
         }
-    } else if (postUiState.post != null) {
+    } else if (postUiState.samplePost != null) {
         LazyColumn(
             modifier = modifier
                 .fillMaxSize()
@@ -51,7 +51,7 @@ fun PostDetailScreen(
         ) {
             item(key = Constants.POST_ITEM_KEY) {
                 PostListItem(
-                    post = postUiState.post,
+                    post = postUiState.samplePost.toDomainPost(),
                     onPostClick = {},
                     onProfileClick = onProfileClick,
                     onLikeClick = {},
@@ -135,7 +135,7 @@ fun CommentsSectionHeader(
 fun PostDetailScreenPreview() {
     PostDetailScreen(
         postUiState = PostUiState(
-            post = samplePosts.first(),
+            samplePost = sampleSamplePosts.first(),
             isLoading = false
         ),
         commentsUiState = CommentsUiState(

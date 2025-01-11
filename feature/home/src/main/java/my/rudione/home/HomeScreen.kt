@@ -25,14 +25,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import my.rudione.common.fake_data.Post
-import my.rudione.common.fake_data.sampleUsers
 import my.rudione.common.util.Constants
 import my.rudione.designsystem.theme.LargeSpacing
 import my.rudione.designsystem.theme.MediumSpacing
 import my.rudione.designsystem.theme.TranquilityTheme
 import my.rudione.home.onboarding.OnBoardingSection
 import my.rudione.home.onboarding.OnBoardingUiState
+import my.rudione.tranquility.common.domain.model.Post
 import my.rudione.ui.components.PostListItem
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,13 +39,13 @@ import my.rudione.ui.components.PostListItem
 fun HomeScreen(
     modifier: Modifier = Modifier,
     onBoardingUiState: OnBoardingUiState,
-    postsFeedUiState: PostsUiState,
+    postsFeedUiState: PostsFeedUiState,
     homeRefreshState: HomeRefreshState,
     onUiAction: (HomeUiAction) -> Unit,
     onProfileNavigation: (userId: Long) -> Unit,
-    onPostDetailNavigation: (Post) -> Unit,
-    fetchData : () -> Unit
+    onPostDetailNavigation: (Post) -> Unit
 ) {
+
     val pullRefreshState = rememberPullToRefreshState()
 
     val listState = rememberLazyListState()
@@ -57,7 +56,7 @@ fun HomeScreen(
 
             if (layoutInfo.totalItemsCount == 0) {
                 false
-            } else {
+            }else{
                 val lastVisibleItem = visibleItemsInfo.last()
                 (lastVisibleItem.index + 1 == layoutInfo.totalItemsCount)
             }
@@ -69,24 +68,25 @@ fun HomeScreen(
             .fillMaxSize()
             .pullToRefresh(
                 state = pullRefreshState,
-                isRefreshing = homeRefreshState.isRefreshing,
-                onRefresh = {
-                    fetchData()
-                }
+                onRefresh = { onUiAction(HomeUiAction.RefreshAction) },
+                isRefreshing = homeRefreshState.isRefreshing
             )
-    ) {
+    ){
         LazyColumn(
-            modifier = modifier.fillMaxSize(),
+            modifier = modifier
+                .fillMaxSize(),
             state = listState
         ) {
-            if (onBoardingUiState.shouldShowOnBoarding) {
-                item(key = Constants.ONBOARDING_ITEM_KEY) {
+            if (onBoardingUiState.shouldShowOnBoarding){
+                item {
                     OnBoardingSection(
                         users = onBoardingUiState.users,
-                        onUserClick = { onProfileNavigation(it.id) },
-                        onFollowsButtonClick = { _, user ->
+                        onUserClick = {onProfileNavigation(it.id)},
+                        onFollowsButtonClick = {_, user ->
                             onUiAction(
-                                HomeUiAction.FollowUserAction(user)
+                                HomeUiAction.FollowUserAction(
+                                    user
+                                )
                             )
                         },
                         onBoardingFinish = { onUiAction(HomeUiAction.RemoveOnboardingAction) }
@@ -94,7 +94,7 @@ fun HomeScreen(
 
                     Text(
                         text = stringResource(id = my.rudione.designsystem.R.string.trending_posts_title),
-                        style = MaterialTheme.typography.titleSmall,
+                        style = MaterialTheme.typography.titleLarge,
                         modifier = modifier
                             .fillMaxWidth()
                             .padding(bottom = LargeSpacing),
@@ -103,17 +103,17 @@ fun HomeScreen(
                 }
             }
 
-            items(items = postsFeedUiState.posts, key = { post -> post.id }) { post ->
+            items(items = postsFeedUiState.post, key = { post -> post.postId }) { post ->
                 PostListItem(
                     post = post,
                     onPostClick = { onPostDetailNavigation(it) },
                     onProfileClick = { onProfileNavigation(it) },
-                    onLikeClick = {  },
-                    onCommentClick = {  }
+                    onLikeClick = { onUiAction(HomeUiAction.PostLikeAction(it)) },
+                    onCommentClick = { onPostDetailNavigation(it) }
                 )
             }
 
-            if (postsFeedUiState.isLoading && postsFeedUiState.posts.isNotEmpty()) {
+            if (postsFeedUiState.isLoading && postsFeedUiState.post.isNotEmpty()) {
                 item(key = Constants.LOADING_MORE_ITEM_KEY) {
                     Box(
                         modifier = modifier
@@ -141,13 +141,12 @@ private fun HomeScreenPreview() {
     TranquilityTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
             HomeScreen(
-                onBoardingUiState = OnBoardingUiState(isLoading = false, users = sampleUsers),
-                postsFeedUiState = PostsUiState(),
+                onBoardingUiState = OnBoardingUiState(),
+                postsFeedUiState = PostsFeedUiState(),
                 homeRefreshState = HomeRefreshState(),
                 onPostDetailNavigation = {},
                 onProfileNavigation = {},
-                onUiAction = {},
-                fetchData = {}
+                onUiAction = {}
             )
         }
     }

@@ -10,7 +10,7 @@ import my.rudione.tranquility.auth.domain.usecase.SignInUseCase
 import my.rudione.tranquility.common.util.Result
 
 class LoginViewModel(
-    private val signInUseCase: SignInUseCase,
+    private val signInUseCase: SignInUseCase
 ): ScreenModel {
     var uiState by mutableStateOf(LoginUiState())
         private set
@@ -32,12 +32,6 @@ class LoginViewModel(
                     uiState.copy(
                         isAuthenticating = false,
                         authenticationSucceed = true
-                    )
-                }
-                else -> {
-                    uiState.copy(
-                        isAuthenticating = false,
-                        authErrorMessage = "Oops, something went wrong!"
                     )
                 }
             }
