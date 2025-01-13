@@ -15,6 +15,6 @@ val appModule = module {
     factory { MainViewModel(get()) }
     factory { HomeViewModel(get(), get(), get(), get() ) }
     factory { PostDetailViewModel() }
-    factory { ProfileViewModel() }
+    factory { ProfileViewModel(get(), get(), get(), get()) }
     factory { EditProfileViewModel() }
 }

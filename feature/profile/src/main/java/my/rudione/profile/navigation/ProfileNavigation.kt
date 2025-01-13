@@ -7,6 +7,7 @@ import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import my.rudione.profile.ProfileScreen
+import my.rudione.profile.ProfileUiAction
 import my.rudione.profile.ProfileViewModel
 import my.rudione.ui.SharedScreen
 
@@ -24,15 +25,20 @@ class ProfileNavigation(
         ProfileScreen(
             userInfoUiState = viewModel.userInfoUiState,
             profilePostsUiState = viewModel.profilePostsUiState,
-            onButtonClick = {
-                navigator.push(postEditProfileScreen)
+            profileId = userId,
+            onUiAction = viewModel::onUiAction,
+            onFollowButtonClick = {
+                viewModel.userInfoUiState.profile?.let { profile ->
+                    if(profile.isOwnProfile) {
+                        navigator.push(postEditProfileScreen)
+                    } else {
+                        viewModel.onUiAction(ProfileUiAction.FollowUserAction(profile = profile))
+                    }
+                }
             },
-            onFollowersClick = { navigator.push(postFollowsScreen) },
-            onFollowingClick = { navigator.push(postFollowingScreen) },
-            onPostClick = {},
-            onLikeClick = {},
-            onCommentClick = {},
-            fetchData = { viewModel.fetchProfile(userId)}
+            onFollowersScreenNavigation = { navigator.push(postFollowsScreen) },
+            onFollowingScreenNavigation = { navigator.push(postFollowingScreen) },
+            onPostDetailNavigation = {},
         )
     }
 }

@@ -18,12 +18,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -35,11 +39,13 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import my.rudione.common.fake_data.SamplePost
+import my.rudione.common.util.Constants
+import my.rudione.common.util.toCurrentUrl
 import my.rudione.designsystem.theme.LargeSpacing
 import my.rudione.designsystem.theme.MediumSpacing
 import my.rudione.designsystem.theme.SmallSpacing
 import my.rudione.designsystem.theme.TranquilityTheme
+import my.rudione.tranquility.common.domain.model.Post
 import my.rudione.ui.components.CircleImage
 import my.rudione.ui.components.FollowsButton
 import my.rudione.ui.components.PostListItem
@@ -49,14 +55,28 @@ fun ProfileScreen(
     modifier: Modifier = Modifier,
     userInfoUiState: UserInfoUiState,
     profilePostsUiState: ProfilePostsUiState,
-    onButtonClick: () -> Unit,
-    onFollowersClick: () -> Unit,
-    onFollowingClick: () -> Unit,
-    onPostClick: (SamplePost) -> Unit,
-    onLikeClick: () -> Unit,
-    onCommentClick: () -> Unit,
-    fetchData: () -> Unit
+    profileId: Long,
+    onUiAction: (ProfileUiAction) -> Unit,
+    onFollowButtonClick: () -> Unit,
+    onFollowersScreenNavigation: () -> Unit,
+    onFollowingScreenNavigation: () -> Unit,
+    onPostDetailNavigation: (Post) -> Unit
 ) {
+    val listState = rememberLazyListState()
+
+    val shouldFetchMorePosts by remember {
+        derivedStateOf {
+            val layoutInfo = listState.layoutInfo
+            val visibleItemsInfo = layoutInfo.visibleItemsInfo
+
+            if (layoutInfo.totalItemsCount == 0) {
+                false
+            }else{
+                val lastVisibleItem = visibleItemsInfo.last()
+                (lastVisibleItem.index + 1 == layoutInfo.totalItemsCount)
+            }
+        }
+    }
 
     if (userInfoUiState.isLoading) {
         Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -64,45 +84,72 @@ fun ProfileScreen(
         }
     } else {
         LazyColumn(
-            modifier = modifier.fillMaxSize()
+            modifier = modifier.fillMaxSize(),
+            state = listState
         ) {
             item(key = "header_section") {
                 ProfileHeaderSection(
-                    imageUrl = userInfoUiState.profile?.profileUrl ?: "",
+                    imageUrl = userInfoUiState.profile?.imageUrl ?: "",
                     name = userInfoUiState.profile?.name ?: "",
                     bio = userInfoUiState.profile?.bio ?: "",
                     followersCount = userInfoUiState.profile?.followersCount ?: 0,
                     followingCount = userInfoUiState.profile?.followingCount ?: 0,
-                    onButtonClick = onButtonClick,
-                    onFollowersClick = onFollowersClick,
-                    onFollowingClick = onFollowingClick
+                    isFollowing = userInfoUiState.profile?.isFollowing ?: false,
+                    isCurrentUser = userInfoUiState.profile?.isOwnProfile ?: false,
+                    onButtonClick = onFollowButtonClick,
+                    onFollowersClick = onFollowersScreenNavigation,
+                    onFollowingClick = onFollowingScreenNavigation
                 )
             }
 
             items(
-                items = profilePostsUiState.samplePosts,
-                key = { post -> post.id }
+                items = profilePostsUiState.posts,
+                key = { post -> post.postId }
             ) {
                 PostListItem(
-                    post = it.toDomainPost(),
+                    post = it,
                     onPostClick = {},
                     onProfileClick = {},
-                    onLikeClick = {},
+                    onLikeClick = { post ->
+                        onUiAction(ProfileUiAction.PostLikeAction(post))
+                    },
                     onCommentClick = {}
                 )
+            }
+
+            if (profilePostsUiState.isLoading) {
+                item(key = Constants.LOADING_MORE_ITEM_KEY) {
+                    Box(
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .padding(
+                                vertical = MediumSpacing,
+                                horizontal = LargeSpacing
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
             }
         }
     }
 
     LaunchedEffect(key1 = Unit) {
-        fetchData()
+        onUiAction(ProfileUiAction.FetchProfileAction(profileId = profileId))
+    }
+
+    LaunchedEffect(key1 = shouldFetchMorePosts) {
+        if (shouldFetchMorePosts && !profilePostsUiState.endReached) {
+            onUiAction(ProfileUiAction.LoadMorePostsAction)
+        }
     }
 }
 
 @Composable
 fun ProfileHeaderSection(
     modifier: Modifier = Modifier,
-    imageUrl: String,
+    imageUrl: String?,
     name: String,
     bio: String,
     followersCount: Int,
@@ -121,7 +168,7 @@ fun ProfileHeaderSection(
             .padding(all = LargeSpacing)
     ) {
         CircleImage(
-            url = imageUrl,
+            url = imageUrl?.toCurrentUrl(),
             modifier = Modifier.padding(bottom = MediumSpacing).size(90.dp),
             onClick = {}
         )
@@ -165,7 +212,11 @@ fun ProfileHeaderSection(
             }
 
             FollowsButton(
-                text = my.rudione.designsystem.R.string.follow_text_label,
+                text = when {
+                    isFollowing -> my.rudione.designsystem.R.string.unfollow_text_label
+                    isCurrentUser -> my.rudione.designsystem.R.string.edit_profile_label
+                    else -> my.rudione.designsystem.R.string.follow_text_label
+                },
                 onClick = onButtonClick,
                 modifier = modifier
                     .heightIn(30.dp)

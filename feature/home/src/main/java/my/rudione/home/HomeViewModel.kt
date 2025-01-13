@@ -7,9 +7,13 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import my.rudione.common.util.Constants
 import my.rudione.common.util.DefaultPagingManager
+import my.rudione.common.util.Event
+import my.rudione.common.util.EventBus
 import my.rudione.common.util.PagingManager
 import my.rudione.home.onboarding.OnBoardingUiState
 import my.rudione.tranquility.common.domain.model.FollowsUser
@@ -39,6 +43,13 @@ class HomeViewModel(
 
     init {
         fetchData()
+
+        EventBus.events
+            .onEach {
+                when(it) {
+                    is Event.PostUpdated -> updatePost(it.post)
+                }
+            }.launchIn(screenModelScope)
     }
 
     private fun fetchData() {
@@ -180,16 +191,20 @@ class HomeViewModel(
 
             when (result) {
                 is Result.Error -> {
-                    postsFeedUiState = postsFeedUiState.copy(
-                        post = postsFeedUiState.post.map {
-                            if (it.postId == post.postId) post else it
-                        }
-                    )
+                    updatePost(post)
                 }
 
                 is Result.Success -> Unit
             }
         }
+    }
+
+    private fun updatePost(post: Post) {
+        postsFeedUiState = postsFeedUiState.copy(
+            post = postsFeedUiState.post.map {
+                if (it.postId == post.postId) post else it
+            }
+        )
     }
 
     fun onUiAction(uiAction: HomeUiAction) {
