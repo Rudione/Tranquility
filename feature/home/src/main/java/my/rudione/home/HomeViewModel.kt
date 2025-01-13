@@ -5,18 +5,26 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import my.rudione.common.util.Constants
+import my.rudione.common.util.DefaultPagingManager
+import my.rudione.common.util.PagingManager
 import my.rudione.home.onboarding.OnBoardingUiState
 import my.rudione.tranquility.common.domain.model.FollowsUser
 import my.rudione.tranquility.common.domain.model.Post
 import my.rudione.tranquility.common.util.Result
 import my.rudione.tranquility.follows.domain.usecase.FollowOrUnfollowUseCase
 import my.rudione.tranquility.follows.domain.usecase.GetFollowableUsersUseCase
+import my.rudione.tranquility.post.domain.usecase.GetPostsUseCase
+import my.rudione.tranquility.post.domain.usecase.LikeOrDislikePostUseCase
 
 class HomeViewModel(
     private val getFollowableUsersUseCase: GetFollowableUsersUseCase,
-    private val followOrUnfollowUseCase: FollowOrUnfollowUseCase
+    private val followOrUnfollowUseCase: FollowOrUnfollowUseCase,
+    private val getPostsUseCase: GetPostsUseCase,
+    private val likePostUseCase: LikeOrDislikePostUseCase
 ) : ScreenModel {
     var postsFeedUiState by mutableStateOf(PostsFeedUiState())
         private set
@@ -27,25 +35,73 @@ class HomeViewModel(
     var homeRefreshState by mutableStateOf(HomeRefreshState())
         private set
 
+    private val pagingManager by lazy { createPagingManager() }
+
     init {
         fetchData()
     }
 
-    fun fetchData() {
+    private fun fetchData() {
         homeRefreshState = homeRefreshState.copy(isRefreshing = true)
 
         screenModelScope.launch {
             delay(1000)
 
-            val users = getFollowableUsersUseCase()
-            handleOnBoardingResult(users)
-            postsFeedUiState = postsFeedUiState.copy(
-                isLoading = false,
-                post = postsFeedUiState.post,
-                errorMessage = null
-            )
+            val onboardingDeferred = async {
+                getFollowableUsersUseCase()
+            }
+
+            pagingManager.apply {
+                reset()
+                loadItems()
+            }
+            handleOnBoardingResult(onboardingDeferred.await())
             homeRefreshState = homeRefreshState.copy(isRefreshing = false)
 
+        }
+    }
+
+    private fun createPagingManager(): PagingManager<Post> {
+        return DefaultPagingManager(
+            onRequest = { page ->
+                getPostsUseCase(page, Constants.DEFAULT_REQUEST_PAGE_SIZE)
+            },
+            onSuccess = { posts, page ->
+                postsFeedUiState = if (posts.isEmpty()) {
+                    postsFeedUiState.copy(endReached = true)
+                } else {
+                    if (page == Constants.INITIAL_PAGE_NUMBER) {
+                        postsFeedUiState = postsFeedUiState.copy(post = emptyList())
+                    }
+                    postsFeedUiState.copy(
+                        post = postsFeedUiState.post + posts,
+                        endReached = posts.size < Constants.DEFAULT_REQUEST_PAGE_SIZE
+                    )
+                }
+            },
+            onError = { cause, page ->
+                if (page == Constants.INITIAL_PAGE_NUMBER) {
+                    homeRefreshState = homeRefreshState.copy(
+                        refreshErrorMessage = cause
+                    )
+                } else {
+                    postsFeedUiState = postsFeedUiState.copy(
+                        errorMessage = cause
+                    )
+                }
+            },
+            onLoadStateChange = { isLoading ->  
+                postsFeedUiState = postsFeedUiState.copy(
+                    isLoading = isLoading
+                )
+            }
+        )
+    }
+
+    private fun loadMorePosts() {
+        if (postsFeedUiState.endReached) return
+        screenModelScope.launch {
+            pagingManager.loadItems()
         }
     }
 
@@ -106,11 +162,41 @@ class HomeViewModel(
         }
     }
 
+    private fun likeOrUnlikePost(post: Post) {
+        screenModelScope.launch {
+            val count = if (post.isLiked) -1 else +1
+            postsFeedUiState = postsFeedUiState.copy(
+                post = postsFeedUiState.post.map {
+                    if (it.postId == post.postId) {
+                        it.copy(
+                            isLiked = !post.isLiked,
+                            likesCount = post.likesCount.plus(count)
+                        )
+                    } else it
+                }
+            )
+
+            val result = likePostUseCase(post = post)
+
+            when (result) {
+                is Result.Error -> {
+                    postsFeedUiState = postsFeedUiState.copy(
+                        post = postsFeedUiState.post.map {
+                            if (it.postId == post.postId) post else it
+                        }
+                    )
+                }
+
+                is Result.Success -> Unit
+            }
+        }
+    }
+
     fun onUiAction(uiAction: HomeUiAction) {
         when (uiAction) {
             is HomeUiAction.FollowUserAction -> followUser(uiAction.user)
-            HomeUiAction.LoadMorePostsAction -> Unit
-            is HomeUiAction.PostLikeAction -> Unit
+            HomeUiAction.LoadMorePostsAction -> loadMorePosts()
+            is HomeUiAction.PostLikeAction -> likeOrUnlikePost(uiAction.post)
             HomeUiAction.RefreshAction -> fetchData()
             HomeUiAction.RemoveOnboardingAction -> dismissOnboarding()
         }
