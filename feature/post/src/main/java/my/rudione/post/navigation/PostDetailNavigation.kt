@@ -10,6 +10,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import my.rudione.post.PostDetailScreen
 import my.rudione.post.PostDetailViewModel
+import my.rudione.profile.navigation.ProfileNavigation
 import my.rudione.ui.SharedScreen
 
 class PostDetailNavigation(
@@ -31,12 +32,11 @@ class PostDetailNavigation(
                 PostDetailScreen(
                     postUiState = viewModel.postUiState,
                     commentsUiState = viewModel.commentsUiState,
-                    onCommentMoreIconClick = {},
-                    onProfileClick = {
-
+                    postId = postId,
+                    onProfileNavigation = {
+                        navigator.push(ProfileNavigation(it))
                     },
-                    onAddCommentClick = {},
-                    fetchData = { viewModel.fetchData(postId) }
+                    onUiAction = viewModel::onUiAction
                 )
             }
         )

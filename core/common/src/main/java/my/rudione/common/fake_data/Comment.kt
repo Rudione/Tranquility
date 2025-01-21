@@ -1,5 +1,7 @@
 package my.rudione.common.fake_data
 
+import my.rudione.tranquility.post.domain.model.PostComment
+
 data class Comment(
     val id: String,
     val comment: String,
@@ -8,7 +10,19 @@ data class Comment(
     val authorImageUrl: String,
     val authorId: Long,
     val postId: Long
-)
+) {
+    fun toDomainComment(): PostComment {
+        return PostComment(
+            commentId = id.hashCode().toLong(),
+            content = comment,
+            createdAt = date,
+            postId = postId,
+            userId = authorId,
+            userName = authorName,
+            userImageUrl = authorImageUrl
+        )
+    }
+}
 
 val sampleComments = listOf(
     Comment(

@@ -21,19 +21,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import my.rudione.common.fake_data.Comment
 import my.rudione.common.fake_data.sampleComments
+import my.rudione.common.util.toCurrentUrl
 import my.rudione.designsystem.theme.DarkGray
 import my.rudione.designsystem.theme.LargeSpacing
 import my.rudione.designsystem.theme.LightGray
 import my.rudione.designsystem.theme.MediumSpacing
 import my.rudione.designsystem.theme.TranquilityTheme
+import my.rudione.tranquility.post.domain.model.PostComment
 import my.rudione.ui.flyweight.icon.IconFactory
 
 @Composable
 fun CommentListItem(
     modifier: Modifier = Modifier,
-    comment: Comment,
+    comment: PostComment,
     onProfileClick: (Long) -> Unit,
-    onMoreIconClick: () -> Unit
+    onMoreIconClick: (PostComment) -> Unit
 ) {
     val roundMoreIcon = IconFactory.getIcon(ImageVector.vectorResource(id = my.rudione.designsystem.R.drawable.round_more_horizontal))
 
@@ -46,8 +48,8 @@ fun CommentListItem(
     ) {
         CircleImage(
             modifier = modifier.size(30.dp),
-            url = comment.authorImageUrl,
-            onClick = { onProfileClick(comment.authorId) }
+            url = comment.userImageUrl?.toCurrentUrl(),
+            onClick = { onProfileClick(comment.userId) }
         )
 
         Column(
@@ -60,13 +62,13 @@ fun CommentListItem(
                 )
             ) {
                 Text(
-                    text = comment.authorName,
+                    text = comment.userName,
                     style = MaterialTheme.typography.titleMedium,
                     modifier = modifier.alignByBaseline()
                 )
 
                 Text(
-                    text = comment.date,
+                    text = comment.createdAt,
                     style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
                     color = if (isSystemInDarkTheme()) {
                         DarkGray
@@ -84,12 +86,12 @@ fun CommentListItem(
                         LightGray
                     },
                     size = 24.dp,
-                    modifier = modifier.clickable { onMoreIconClick() }
+                    modifier = modifier.clickable { onMoreIconClick(comment) }
                 )
             }
 
             Text(
-                text = comment.comment,
+                text = comment.content,
                 style = MaterialTheme.typography.bodyMedium
             )
         }
@@ -102,7 +104,7 @@ fun CommentListItemPreview() {
     TranquilityTheme {
         Surface(color = MaterialTheme.colorScheme.surface) {
             CommentListItem(
-                comment = sampleComments.first(),
+                comment = sampleComments.first().toDomainComment(),
                 onProfileClick = {},
                 onMoreIconClick = {}
             )

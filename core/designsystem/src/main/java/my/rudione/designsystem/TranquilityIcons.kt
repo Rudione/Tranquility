@@ -1,5 +1,8 @@
 package my.rudione.designsystem
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+
 object TranquilityIcons {
     val PERSON_CIRCLE_ICON = R.drawable.person_circle_icon
     val ROUND_ARROW_BACK = R.drawable.round_arrow_back
@@ -9,4 +12,6 @@ object TranquilityIcons {
     val CHAT_ICON_OUTLINED = R.drawable.chat_icon_outlined
     val LIKE_ICON_FILLED = R.drawable.like_icon_filled
     val LIKE_ICON_OUTLINED = R.drawable.like_icon_outlined
+
+    val DELETE = Icons.Default.Delete
 }
