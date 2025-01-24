@@ -11,6 +11,9 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.jvm).apply(false)
     alias(libs.plugins.androidLibrary).apply(false)
 }
+val sourceCompatibility by extra("17")
+val targetCompatibility by extra(sourceCompatibility)
+val sourceCompatibility1 by extra(sourceCompatibility)
 
 tasks.register("clean", Delete::class) {
     delete(rootProject.buildDir)

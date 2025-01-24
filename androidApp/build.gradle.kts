@@ -29,11 +29,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     applicationVariants.all {
         addJavaSourceFoldersToModel(
@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.material)
+    implementation(project(":feature:follows"))
     debugImplementation(libs.compose.ui.tooling)
     implementation(libs.voyager.navigator)
     implementation(libs.voyager.transitions)

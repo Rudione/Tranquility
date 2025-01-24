@@ -68,7 +68,6 @@ class HomeViewModel(
             }
             handleOnBoardingResult(onboardingDeferred.await())
             homeRefreshState = homeRefreshState.copy(isRefreshing = false)
-
         }
     }
 
@@ -101,7 +100,7 @@ class HomeViewModel(
                     )
                 }
             },
-            onLoadStateChange = { isLoading ->  
+            onLoadStateChange = { isLoading ->
                 postsFeedUiState = postsFeedUiState.copy(
                     isLoading = isLoading
                 )
@@ -218,6 +217,14 @@ class HomeViewModel(
     }
 }
 
+sealed interface HomeUiAction {
+    data class FollowUserAction(val user: FollowsUser) : HomeUiAction
+    data class PostLikeAction(val post: Post) : HomeUiAction
+    data object RemoveOnboardingAction : HomeUiAction
+    data object RefreshAction : HomeUiAction
+    data object LoadMorePostsAction : HomeUiAction
+}
+
 data class PostsFeedUiState(
     val isLoading: Boolean = false,
     val post: List<Post> = listOf(),
@@ -229,11 +236,3 @@ data class HomeRefreshState(
     val isRefreshing: Boolean = false,
     val refreshErrorMessage: String? = null
 )
-
-sealed interface HomeUiAction {
-    data class FollowUserAction(val user: FollowsUser) : HomeUiAction
-    data class PostLikeAction(val post: Post) : HomeUiAction
-    data object RemoveOnboardingAction : HomeUiAction
-    data object RefreshAction : HomeUiAction
-    data object LoadMorePostsAction : HomeUiAction
-}

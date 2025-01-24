@@ -21,10 +21,10 @@ class FollowsNavigation(
 
         FollowsScreen(
             uiState = viewModel.uiState,
-            fetchFollows = { viewModel.fetchFollows(userId, followsType = 2) },
-            onItemClick = {
-                navigator.push(pushToProfile(it))
-            }
+            userId = userId,
+            followsType = 1,
+            onUiAction = viewModel::onUiAction,
+            onProfileNavigation = { navigator.push(pushToProfile) }
         )
     }
 }
