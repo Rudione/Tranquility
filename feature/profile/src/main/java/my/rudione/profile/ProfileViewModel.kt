@@ -7,6 +7,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import my.rudione.common.fake_data.sampleSamplePosts
@@ -38,6 +39,15 @@ class ProfileViewModel(
         private set
 
     private lateinit var pagingManager: PagingManager<Post>
+
+    init {
+        EventBus.events.onEach {
+            when(it) {
+                is Event.PostUpdated -> updatePost(it.post)
+                is Event.ProfileUpdated -> updateProfile(it.profile)
+            }
+        }.launchIn(screenModelScope)
+    }
 
     private fun fetchProfile(userId: Long) {
         screenModelScope.launch {
@@ -169,6 +179,24 @@ class ProfileViewModel(
         profilePostsUiState = profilePostsUiState.copy(
             posts = profilePostsUiState.posts.map {
                 if (it.postId == post.postId) post else it
+            }
+        )
+    }
+
+    private fun updateProfile(profile: Profile) {
+        userInfoUiState = userInfoUiState.copy(
+            profile = profile
+        )
+        profilePostsUiState = profilePostsUiState.copy(
+            posts = profilePostsUiState.posts.map {
+                if (it.userId == profile.id) {
+                    it.copy(
+                        userName = profile.name,
+                        userImageUrl = profile.imageUrl
+                    )
+                } else {
+                    it
+                }
             }
         )
     }

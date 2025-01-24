@@ -2,6 +2,7 @@ package my.rudione.common.util
 
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import my.rudione.tranquility.account.domain.model.Profile
 import my.rudione.tranquility.common.domain.model.Post
 
 object EventBus {
@@ -17,4 +18,5 @@ object EventBus {
 
 sealed interface Event {
     data class PostUpdated(val post: Post): Event
+    data class ProfileUpdated(val profile: Profile): Event
 }

@@ -18,14 +18,12 @@ class EditProfileNavigation(
 
         EditProfileScreen(
             editProfileUiState = viewModel.uiState,
-            bioTextFieldValue = viewModel.bioTextFieldValue,
             onNameChange = viewModel::onNameChange,
+            bioTextFieldValue = viewModel.bioTextFieldValue,
             onBioChange = viewModel::onBioChange,
-            onUploadButtonClick = { viewModel.uploadProfile() },
-            onUploadSucceed = {
-                navigator.pop()
-            },
-            fetchProfile = { viewModel.fetchProfile(userId) }
+            onUploadSucceed = { navigator.pop() },
+            userId = userId,
+            onUiAction = viewModel::onUiAction
         )
     }
 }

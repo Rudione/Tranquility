@@ -1,5 +1,6 @@
 package my.rudione.tranquility.android.di
 
+import my.rudione.common.util.ImageBytesReader
 import my.rudione.editprofile.EditProfileViewModel
 import my.rudione.follows.FollowsViewModel
 import my.rudione.home.HomeViewModel
@@ -8,6 +9,7 @@ import my.rudione.post.PostDetailViewModel
 import my.rudione.profile.ProfileViewModel
 import my.rudione.signup.SignUpViewModel
 import my.rudione.tranquility.android.MainViewModel
+import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val appModule = module {
@@ -17,6 +19,7 @@ val appModule = module {
     factory { HomeViewModel(get(), get(), get(), get()) }
     factory { PostDetailViewModel(get(), get(), get(), get(), get()) }
     factory { ProfileViewModel(get(), get(), get(), get()) }
-    factory { EditProfileViewModel() }
+    factory { EditProfileViewModel(get(), get(), get()) }
     factory { FollowsViewModel(get()) }
+    single { ImageBytesReader(androidContext()) }
 }

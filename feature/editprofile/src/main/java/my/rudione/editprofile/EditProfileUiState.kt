@@ -1,6 +1,6 @@
 package my.rudione.editprofile
 
-import my.rudione.common.fake_data.Profile
+import my.rudione.tranquility.account.domain.model.Profile
 
 data class EditProfileUiState(
     val isLoading: Boolean = false,

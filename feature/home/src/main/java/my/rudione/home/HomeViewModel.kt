@@ -16,6 +16,7 @@ import my.rudione.common.util.Event
 import my.rudione.common.util.EventBus
 import my.rudione.common.util.PagingManager
 import my.rudione.home.onboarding.OnBoardingUiState
+import my.rudione.tranquility.account.domain.model.Profile
 import my.rudione.tranquility.common.domain.model.FollowsUser
 import my.rudione.tranquility.common.domain.model.Post
 import my.rudione.tranquility.common.util.Result
@@ -48,6 +49,7 @@ class HomeViewModel(
             .onEach {
                 when(it) {
                     is Event.PostUpdated -> updatePost(it.post)
+                    is Event.ProfileUpdated -> updateCurrentUserPostsProfileData(it.profile)
                 }
             }.launchIn(screenModelScope)
     }
@@ -202,6 +204,21 @@ class HomeViewModel(
         postsFeedUiState = postsFeedUiState.copy(
             post = postsFeedUiState.post.map {
                 if (it.postId == post.postId) post else it
+            }
+        )
+    }
+
+    private fun updateCurrentUserPostsProfileData(profile: Profile) {
+        postsFeedUiState = postsFeedUiState.copy(
+            post = postsFeedUiState.post.map {
+                if (it.userId == profile.id) {//should use it.isOwnComment
+                    it.copy(
+                        userName = profile.name,
+                        userImageUrl = profile.imageUrl
+                    )
+                } else {
+                    it
+                }
             }
         )
     }

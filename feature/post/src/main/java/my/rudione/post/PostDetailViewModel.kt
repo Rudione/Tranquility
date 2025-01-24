@@ -15,6 +15,7 @@ import my.rudione.common.util.DefaultPagingManager
 import my.rudione.common.util.Event
 import my.rudione.common.util.EventBus
 import my.rudione.common.util.PagingManager
+import my.rudione.tranquility.account.domain.model.Profile
 import my.rudione.tranquility.common.domain.model.Post
 import my.rudione.tranquility.common.util.Result
 import my.rudione.tranquility.post.domain.model.PostComment
@@ -44,6 +45,7 @@ class PostDetailViewModel(
             .onEach {
                 when(it) {
                     is Event.PostUpdated -> updatePost(it.post)
+                    is Event.ProfileUpdated -> updateCurrentUserProfileData(it.profile)
                 }
             }
             .launchIn(screenModelScope)
@@ -219,6 +221,29 @@ class PostDetailViewModel(
                 }
             }
         }
+    }
+
+    private fun updateCurrentUserProfileData(profile: Profile) {
+        val post = postUiState.post ?: return
+        if (post.isOwnPost) {
+            val updatedPost = post.copy(
+                userName = profile.name,
+                userImageUrl = profile.imageUrl
+            )
+            updatePost(updatedPost)
+        }
+        commentsUiState = commentsUiState.copy(
+            comments = commentsUiState.comments.map {
+                if (it.userId == profile.id) {//should use it.isOwnComment
+                    it.copy(
+                        userName = profile.name,
+                        userImageUrl = profile.imageUrl
+                    )
+                } else {
+                    it
+                }
+            }
+        )
     }
 
     fun onUiAction(uiAction: PostDetailUiAction) {
