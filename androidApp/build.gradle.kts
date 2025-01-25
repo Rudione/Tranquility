@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.material)
     implementation(project(":feature:follows"))
+    implementation(project(":feature:createpost"))
     debugImplementation(libs.compose.ui.tooling)
     implementation(libs.voyager.navigator)
     implementation(libs.voyager.transitions)

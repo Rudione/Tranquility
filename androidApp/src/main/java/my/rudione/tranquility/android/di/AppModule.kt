@@ -1,6 +1,7 @@
 package my.rudione.tranquility.android.di
 
 import my.rudione.common.util.ImageBytesReader
+import my.rudione.createpost.CreatePostViewModel
 import my.rudione.editprofile.EditProfileViewModel
 import my.rudione.follows.FollowsViewModel
 import my.rudione.home.HomeViewModel
@@ -21,5 +22,6 @@ val appModule = module {
     factory { ProfileViewModel(get(), get(), get(), get()) }
     factory { EditProfileViewModel(get(), get(), get()) }
     factory { FollowsViewModel(get()) }
+    factory { CreatePostViewModel(get(), get()) }
     single { ImageBytesReader(androidContext()) }
 }

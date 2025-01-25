@@ -45,6 +45,7 @@ class ProfileViewModel(
             when(it) {
                 is Event.PostUpdated -> updatePost(it.post)
                 is Event.ProfileUpdated -> updateProfile(it.profile)
+                is Event.PostCreated -> Unit
             }
         }.launchIn(screenModelScope)
     }
