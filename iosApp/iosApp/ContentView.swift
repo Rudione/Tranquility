@@ -14,3 +14,9 @@ struct ContentView_Previews: PreviewProvider {
 		ContentView()
 	}
 }
+
+class Greeting {
+    func greet() -> String {
+        return "Hello, World!"
+    }
+}
