@@ -1,6 +1,7 @@
 package my.rudione.createpost
 
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -44,6 +45,7 @@ import coil.compose.AsyncImage
 import my.rudione.designsystem.TranquilityIcons
 import my.rudione.designsystem.theme.ButtonHeight
 import my.rudione.designsystem.theme.ExtraLargeSpacing
+import my.rudione.designsystem.theme.ExtraLargeUnderAppBar
 import my.rudione.designsystem.theme.LargeSpacing
 import my.rudione.ui.components.ScreenLevelLoadingView
 
@@ -62,8 +64,10 @@ fun CreatePostScreen(
     )
 
     Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        modifier = modifier
+            .fillMaxSize().
+            padding(top = ExtraLargeUnderAppBar),
+        contentAlignment = Alignment.Center,
     ) {
         Column(
             modifier = modifier
@@ -164,6 +168,7 @@ fun CreatePostScreen(
     }
     if (createPostUiState.errorMessage != null) {
         Toast.makeText(context, createPostUiState.errorMessage, Toast.LENGTH_SHORT).show()
+        Log.d("CreatePostScreen", "CreatePostScreen: ${createPostUiState.errorMessage}")
     }
 }
 
@@ -181,12 +186,7 @@ private fun PostCaptionTextField(
         onValueChange = onCaptionChange,
         colors = TextFieldDefaults.colors(
             unfocusedIndicatorColor = Color.Transparent,
-            focusedIndicatorColor = Color.Transparent,
-            focusedContainerColor = if (isSystemInDarkTheme()) {
-                MaterialTheme.colorScheme.background
-            } else {
-                MaterialTheme.colorScheme.surface
-            }
+            focusedIndicatorColor = Color.Transparent
         ),
         textStyle = MaterialTheme.typography.bodyMedium,
         placeholder = {

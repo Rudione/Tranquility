@@ -78,7 +78,7 @@ fun PostDetailScreen(
     commentsUiState: CommentsUiState,
     postId: Long,
     onProfileNavigation: (userId: Long) -> Unit,
-    onUiAction: (PostDetailUiAction) -> Unit
+    onUiAction: (PostDetailUiAction) -> Unit,
 ) {
     val listState = rememberLazyListState()
 
@@ -104,101 +104,104 @@ fun PostDetailScreen(
         mutableStateOf(null)
     }
 
-    ModalBottomSheet(
-        sheetState = sheetState,
-        onDismissRequest = { scope.launch { sheetState.hide() } },
-    ) {
-        selectedComment?.let { postComment ->
-            CommentMoreActionsBottomSheetContent(
-                comment = postComment,
-                canDeleteComment = postComment.userId == postUiState.post?.userId || postComment.isOwner,
-                onDeleteCommentClick = { comment ->
-                    scope.launch { sheetState.hide() }.invokeOnCompletion {
-                        if (!sheetState.isVisible) {
-                            onUiAction(PostDetailUiAction.RemoveCommentAction(comment))
-                            selectedComment = null
+    if (postUiState.isLoading) {
+        ScreenLevelLoadingView()
+    } else if (postUiState.post != null) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            LazyColumn(
+                modifier = modifier
+                    .fillMaxSize()
+                    .background(color = MaterialTheme.colorScheme.surface)
+                    .weight(1f),
+                state = listState
+            ) {
+                item(key = Constants.POST_ITEM_KEY) {
+                    PostListItem(
+                        post = postUiState.post,
+                        onProfileClick = {},
+                        onLikeClick = { onUiAction(PostDetailUiAction.LikeOrDislikePostAction(it)) },
+                        onCommentClick = {}
+                    )
+                }
+
+                item(key = Constants.COMMENTS_HEADER_KEY) {
+                    CommentsHeaderSection()
+                }
+
+                if (commentsUiState.isAddingNewComment) {
+                    loadingMoreItem()
+                }
+
+                items(
+                    items = commentsUiState.comments,
+                    key = { comment -> comment.commentId }
+                ) {
+                    HorizontalDivider()
+                    CommentListItem(
+                        comment = it,
+                        onProfileClick = {
+                            //onProfileClick(it.userId)
+                        },
+                        onMoreIconClick = {
+                            selectedComment = it
+                            scope.launch { sheetState.show() }
                         }
-                    }
+                    )
+                }
+
+                if (commentsUiState.isLoading) {
+                    loadingMoreItem()
+                }
+            }
+
+            CommentInput(
+                commentText = commentText,
+                onCommentChange = {
+                    commentText = it
                 },
-                onNavigateToProfile = { userId ->
-                    scope.launch {
-                        sheetState.hide()
-                    }.invokeOnCompletion {
-                        if (!sheetState.isVisible) {
-                            selectedComment = null
-                            onProfileNavigation(userId)
-                        }
-                    }
+                onSendClick = {
+                    keyboardController?.hide()
+                    onUiAction(PostDetailUiAction.AddCommentAction(it))
+                    commentText = ""
                 }
             )
         }
+    } else {
+        ScreenLevelLoadingErrorView {
+            onUiAction(PostDetailUiAction.FetchPostAction(postId))
+        }
+    }
 
-        if (postUiState.isLoading) {
-            ScreenLevelLoadingView()
-        } else if (postUiState.post != null) {
-            Column(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                LazyColumn(
-                    modifier = modifier
-                        .fillMaxSize()
-                        .background(color = MaterialTheme.colorScheme.surface)
-                        .weight(1f),
-                    state = listState
-                ) {
-                    item(key = Constants.POST_ITEM_KEY) {
-                        PostListItem(
-                            post = postUiState.post,
-                            onPostClick = {},
-                            onProfileClick = {},
-                            onLikeClick = { onUiAction(PostDetailUiAction.LikeOrDislikePostAction(it)) },
-                            onCommentClick = {}
-                        )
-                    }
-
-                    item(key = Constants.COMMENTS_HEADER_KEY) {
-                        CommentsHeaderSection()
-                    }
-
-                    if (commentsUiState.isAddingNewComment) {
-                        loadingMoreItem()
-                    }
-
-                    items(
-                        items = commentsUiState.comments,
-                        key = { comment -> comment.commentId }
-                    ) {
-                        HorizontalDivider()
-                        CommentListItem(
-                            comment = it,
-                            onProfileClick = {},
-                            onMoreIconClick = {
-                                selectedComment = it
-                                scope.launch { sheetState.show() }
+    if (selectedComment != null) {
+        ModalBottomSheet(
+            sheetState = sheetState,
+            onDismissRequest = { scope.launch { sheetState.hide() } },
+        ) {
+            selectedComment?.let { postComment ->
+                CommentMoreActionsBottomSheetContent(
+                    comment = postComment,
+                    canDeleteComment = postComment.userId == postUiState.post?.userId || postComment.isOwner,
+                    onDeleteCommentClick = { comment ->
+                        scope.launch { sheetState.hide() }.invokeOnCompletion {
+                            if (!sheetState.isVisible) {
+                                onUiAction(PostDetailUiAction.RemoveCommentAction(comment))
+                                selectedComment = null
                             }
-                        )
-                    }
-
-                    if (commentsUiState.isLoading) {
-                        loadingMoreItem()
-                    }
-                }
-
-                CommentInput(
-                    commentText = commentText,
-                    onCommentChange = {
-                        commentText = it
+                        }
                     },
-                    onSendClick = {
-                        keyboardController?.hide()
-                        onUiAction(PostDetailUiAction.AddCommentAction(it))
-                        commentText = ""
+                    onNavigateToProfile = { userId ->
+                        scope.launch {
+                            sheetState.hide()
+                        }.invokeOnCompletion {
+                            if (!sheetState.isVisible) {
+                                selectedComment = null
+                                onProfileNavigation(userId)
+                            }
+                        }
                     }
                 )
-            }
-        } else {
-            ScreenLevelLoadingErrorView {
-                onUiAction(PostDetailUiAction.FetchPostAction(postId))
             }
         }
     }

@@ -17,6 +17,7 @@ import io.ktor.client.request.setBody
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
+import io.ktor.util.InternalAPI
 
 internal class PostApiService : KtorApi() {
     suspend fun getFeedPosts(
@@ -89,6 +90,7 @@ internal class PostApiService : KtorApi() {
         return PostApiResponse(code = httpResponse.status, data = httpResponse.body())
     }
 
+    @OptIn(InternalAPI::class)
     suspend fun createPost(
         token: String,
         newPostData: String,
@@ -111,7 +113,10 @@ internal class PostApiService : KtorApi() {
             setToken(token = token)
             setupMultipartRequest()
             method = HttpMethod.Post
+
+            println("Request: $this")
         }
+        println("Response: ${httpResponse.content}")
         return PostApiResponse(code = httpResponse.status, data = httpResponse.body())
     }
 }

@@ -80,8 +80,7 @@ fun OnBoardingUserItem(
                 modifier = modifier
                     .widthIn(min = 80.dp)
                     .heightIn(min = 30.dp),
-                text = if (isFollowing) R.string.follow else R.string.unfollow,
-                onClick = { onFollowButtonClick(isFollowing, followsUser) },
+                text = if (isFollowing) R.string.unfollow else R.string.follow,                onClick = { onFollowButtonClick(isFollowing, followsUser) },
                 isOutline = followsUser.isFollowing
             )
         }

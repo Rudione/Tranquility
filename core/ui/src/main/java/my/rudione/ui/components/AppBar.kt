@@ -11,6 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import cafe.adriel.voyager.core.registry.rememberScreen
+import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.Navigator
 import my.rudione.designsystem.TranquilityIcons
 import my.rudione.designsystem.theme.SmallElevation
@@ -20,9 +22,12 @@ import my.rudione.ui.SharedScreen
 @Composable
 fun AppBar(
     modifier: Modifier = Modifier,
-    navigator: Navigator
+    navigator: Navigator,
+    appBar: String,
+    shouldShowNavigationIcon: (Screen) -> Boolean,
+    actionVisible: Boolean = true
 ) {
-    val currentDestination = navigator.lastItem as? SharedScreen
+    val currentDestination = navigator.lastItem
 
     Surface(
         modifier = modifier,
@@ -30,11 +35,11 @@ fun AppBar(
     ) {
         TopAppBar(
             title = {
-                Text(text = stringResource(id = getAppBarTitle(currentDestination)))
+                Text(text = appBar)
             },
             modifier = modifier,
             actions = {
-                AnimatedVisibility(visible = currentDestination is SharedScreen.HomeScreen) {
+                AnimatedVisibility(visible = actionVisible) {
                     IconButton(onClick = { /*TODO*/ }) {
                         Icon(
                             painter = painterResource(id = TranquilityIcons.PERSON_CIRCLE_ICON),
@@ -55,26 +60,4 @@ fun AppBar(
             }
         )
     }
-}
-
-private fun getAppBarTitle(currentDestination: SharedScreen?): Int {
-    return when (currentDestination) {
-        is SharedScreen.LoginScreen -> my.rudione.designsystem.R.string.login_destination_title
-        is SharedScreen.SignUpScreen -> my.rudione.designsystem.R.string.signup_destination_title
-        is SharedScreen.HomeScreen -> my.rudione.designsystem.R.string.home_destination_title
-        is SharedScreen.ProfileScreen -> my.rudione.designsystem.R.string.profile_destination_title
-        is SharedScreen.PostDetailScreen -> my.rudione.designsystem.R.string.post_detail_destination_title
-        is SharedScreen.EditProfileScreen -> my.rudione.designsystem.R.string.edit_profile_destination_title
-        is SharedScreen.FollowsScreen -> my.rudione.designsystem.R.string.followers_text
-        is SharedScreen.FollowingScreen -> my.rudione.designsystem.R.string.following_text
-        else -> my.rudione.designsystem.R.string.no_destination_title
-    }
-}
-
-private fun shouldShowNavigationIcon(currentDestination: SharedScreen?): Boolean {
-    return !(
-            currentDestination is SharedScreen.LoginScreen
-                    || currentDestination is SharedScreen.SignUpScreen
-                    || currentDestination is SharedScreen.HomeScreen
-            )
 }

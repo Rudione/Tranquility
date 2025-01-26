@@ -1,5 +1,6 @@
 package my.rudione.tranquility.android
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope

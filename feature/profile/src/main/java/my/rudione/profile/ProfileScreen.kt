@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import my.rudione.common.util.Constants
 import my.rudione.common.util.toCurrentUrl
+import my.rudione.designsystem.theme.ExtraLargeUnderAppBar
 import my.rudione.designsystem.theme.LargeSpacing
 import my.rudione.designsystem.theme.MediumSpacing
 import my.rudione.designsystem.theme.SmallSpacing
@@ -108,7 +109,9 @@ fun ProfileScreen(
             ) {
                 PostListItem(
                     post = it,
-                    onPostClick = {},
+                    onPostClick = {
+                        onPostDetailNavigation(it)
+                    },
                     onProfileClick = {},
                     onLikeClick = { post ->
                         onUiAction(ProfileUiAction.PostLikeAction(post))
@@ -164,6 +167,7 @@ fun ProfileHeaderSection(
         modifier = modifier
             .fillMaxWidth()
             .padding(bottom = MediumSpacing)
+            .padding(top = ExtraLargeUnderAppBar)
             .background(color = MaterialTheme.colorScheme.surface)
             .padding(all = LargeSpacing)
     ) {

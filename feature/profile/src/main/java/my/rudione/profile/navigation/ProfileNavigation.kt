@@ -38,7 +38,7 @@ class ProfileNavigation(
             },
             onFollowersScreenNavigation = { navigator.push(postFollowsScreen) },
             onFollowingScreenNavigation = { navigator.push(postFollowingScreen) },
-            onPostDetailNavigation = {},
+            onPostDetailNavigation = { },
         )
     }
 }

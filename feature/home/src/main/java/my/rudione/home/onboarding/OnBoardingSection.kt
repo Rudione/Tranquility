@@ -64,7 +64,9 @@ fun OnBoardingSection(
         )
 
         OutlinedButton(
-            onClick = onBoardingFinish,
+            onClick = {
+            //onBoardingFinish()
+            },
             modifier = modifier
                 .fillMaxWidth(fraction = 0.5f)
                 .align(Alignment.CenterHorizontally)

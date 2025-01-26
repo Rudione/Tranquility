@@ -7,6 +7,7 @@ val MediumSpacing = 8.dp
 val LargeSpacing = 16.dp
 
 val ExtraLargeSpacing = 24.dp
+val ExtraLargeUnderAppBar = 64.dp
 val SmallElevation = 2.dp
 val MediumElevation = 4.dp
 

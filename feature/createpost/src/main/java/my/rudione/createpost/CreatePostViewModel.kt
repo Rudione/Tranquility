@@ -1,6 +1,7 @@
 package my.rudione.createpost
 
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -38,7 +39,9 @@ class CreatePostViewModel(
                 )
             }
         }
+        Log.d("CreatePostViewModel", "uploadPost: $result, ${uiState.errorMessage}, ${uiState.caption}, ${uiState.postCreated}")
     }
+
     private fun readImageBytes(imageUri: Uri){
         uiState = uiState.copy(
             isLoading = true
@@ -57,6 +60,8 @@ class CreatePostViewModel(
                 }
             }
         }
+
+        Log.d("CreatePostViewModel", "readImageBytes: ${uiState.isLoading}, ${uiState.errorMessage}")
     }
 
     private fun onCaptionChange(input: String){

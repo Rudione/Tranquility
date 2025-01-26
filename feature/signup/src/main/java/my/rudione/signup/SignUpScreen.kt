@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import my.rudione.designsystem.theme.ButtonHeight
 import my.rudione.designsystem.theme.ExtraLargeSpacing
+import my.rudione.designsystem.theme.ExtraLargeUnderAppBar
 import my.rudione.designsystem.theme.LargeSpacing
 import my.rudione.designsystem.theme.MediumSpacing
 import my.rudione.designsystem.theme.SmallSpacing
@@ -49,7 +50,12 @@ fun SignUpScreen(
 ) {
     val context = LocalContext.current
 
-    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(top = ExtraLargeUnderAppBar),
+        contentAlignment = Alignment.Center,
+    ) {
         Column(
             modifier = modifier
                 .fillMaxSize()
