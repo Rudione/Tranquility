@@ -13,3 +13,4 @@ val MediumElevation = 4.dp
 
 
 val ButtonHeight = 52.dp
+val GenerativeButtonHeight = 36.dp

@@ -13,13 +13,16 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +32,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -40,6 +44,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import my.rudione.designsystem.TranquilityIcons
@@ -54,7 +59,7 @@ fun CreatePostScreen(
     modifier: Modifier = Modifier,
     createPostUiState: CreatePostUiState,
     onPostCreated: () -> Unit,
-    onUiAction: (CreatePostUiAction) -> Unit
+    onUiAction: (CreatePostUiAction) -> Unit,
 ) {
     val context = LocalContext.current
     var selectedImage by rememberSaveable { mutableStateOf<Uri?>(null) }
@@ -65,8 +70,8 @@ fun CreatePostScreen(
 
     Box(
         modifier = modifier
-            .fillMaxSize().
-            padding(top = ExtraLargeUnderAppBar),
+            .fillMaxSize()
+            .padding(top = ExtraLargeUnderAppBar),
         contentAlignment = Alignment.Center,
     ) {
         Column(
@@ -138,24 +143,45 @@ fun CreatePostScreen(
                 }
             }
 
-            Button(
-                onClick = {
-                    selectedImage?.let {
-                        onUiAction(CreatePostUiAction.CreatePostAction(it))
-                    }
-                },
-                modifier = modifier
-                    .fillMaxWidth()
-                    .height(ButtonHeight),
-                elevation = ButtonDefaults.buttonElevation(
-                    defaultElevation = 0.dp
-                ),
-                shape = MaterialTheme.shapes.medium,
-                enabled = createPostUiState.caption.isNotBlank()
-                        && !createPostUiState.isLoading
-                        && selectedImage != null
+            Row(
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = stringResource(id = my.rudione.designsystem.R.string.create_post_button_label))
+                Button(
+                    onClick = {
+                        selectedImage?.let {
+                            onUiAction(CreatePostUiAction.CreatePostAction(it))
+                        }
+                    },
+                    modifier = modifier
+                        .weight(0.7f)
+                        .height(ButtonHeight),
+                    elevation = ButtonDefaults.buttonElevation(
+                        defaultElevation = 0.dp
+                    ),
+                    shape = MaterialTheme.shapes.medium,
+                    enabled = createPostUiState.caption.isNotBlank()
+                            && !createPostUiState.isLoading
+                            && selectedImage != null
+                ) {
+                    Text(text = stringResource(id = my.rudione.designsystem.R.string.create_post_button_label))
+                }
+                Spacer(modifier = modifier.width(8.dp))
+                Button(
+                    onClick = {
+                        onUiAction(CreatePostUiAction.CaptionChangedWithAI(createPostUiState.caption))
+                    },
+                    modifier = modifier
+                        .weight(0.15f)
+                        .height(ButtonHeight),
+                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp),
+                    shape = MaterialTheme.shapes.medium
+                ) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(TranquilityIcons.AI_ICON),
+                        contentDescription = null,
+                        modifier = modifier.fillMaxSize()
+                    )
+                }
             }
         }
 

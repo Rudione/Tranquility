@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import my.rudione.common.util.Constants
+import my.rudione.designsystem.theme.ExtraLargeUnderAppBar
 import my.rudione.designsystem.theme.LargeSpacing
 import my.rudione.designsystem.theme.MediumSpacing
 import my.rudione.designsystem.theme.TranquilityTheme
@@ -71,6 +72,7 @@ fun HomeScreen(
                 onRefresh = { onUiAction(HomeUiAction.RefreshAction) },
                 isRefreshing = homeRefreshState.isRefreshing
             )
+            .padding(top = ExtraLargeUnderAppBar)
     ){
         LazyColumn(
             modifier = modifier

@@ -13,6 +13,7 @@ object TranquilityIcons {
     val LIKE_ICON_FILLED = R.drawable.like_icon_filled
     val LIKE_ICON_OUTLINED = R.drawable.like_icon_outlined
     val ADD_IMAGE = R.drawable.add_image
+    val AI_ICON = R.drawable.baseline_auto_awesome_24
 
     val DELETE = Icons.Default.Delete
 }

@@ -59,6 +59,7 @@ import my.rudione.common.fake_data.sampleSamplePosts
 import my.rudione.common.util.Constants
 import my.rudione.common.util.toCurrentUrl
 import my.rudione.designsystem.TranquilityIcons
+import my.rudione.designsystem.theme.ExtraLargeUnderAppBar
 import my.rudione.designsystem.theme.LargeSpacing
 import my.rudione.designsystem.theme.MediumSpacing
 import my.rudione.designsystem.theme.SmallSpacing
@@ -108,7 +109,9 @@ fun PostDetailScreen(
         ScreenLevelLoadingView()
     } else if (postUiState.post != null) {
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = ExtraLargeUnderAppBar)
         ) {
             LazyColumn(
                 modifier = modifier

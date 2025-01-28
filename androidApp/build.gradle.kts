@@ -1,8 +1,18 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.google.ksp)
+    alias(libs.plugins.googleAndroidLibrariesMapsplatformSecretsGradlePlugin)
+}
+
+fun getLocalProperty(key: String): String {
+    val properties = Properties().apply {
+        load(project.rootProject.file("local.properties").inputStream())
+    }
+    return "\"${properties.getProperty(key)}\""
 }
 
 android {
@@ -14,9 +24,12 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+        buildConfigField("String", "API_KEY", getLocalProperty("API_KEY"))
+
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     packaging {
         resources {
@@ -52,6 +65,7 @@ dependencies {
     implementation(libs.material)
     implementation(project(":feature:follows"))
     implementation(project(":feature:createpost"))
+    implementation(libs.generativeai)
     debugImplementation(libs.compose.ui.tooling)
     implementation(libs.voyager.navigator)
     implementation(libs.voyager.transitions)

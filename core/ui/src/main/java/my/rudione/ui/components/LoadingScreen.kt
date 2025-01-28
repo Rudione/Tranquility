@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 fun LoadingScreen(
     modifier: Modifier = Modifier
 ) {
-    Column {
-
+    Column(modifier = modifier) {
+        ScreenLevelLoadingView()
     }
 }

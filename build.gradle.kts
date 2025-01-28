@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.composeCompiler).apply(false)
     alias(libs.plugins.jetbrains.kotlin.jvm).apply(false)
     alias(libs.plugins.androidLibrary).apply(false)
+    alias(libs.plugins.googleAndroidLibrariesMapsplatformSecretsGradlePlugin).apply(false)
 }
 val sourceCompatibility by extra("17")
 val targetCompatibility by extra(sourceCompatibility)
