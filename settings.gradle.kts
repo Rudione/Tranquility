@@ -23,8 +23,6 @@ include(":feature:home")
 include(":core:designsystem") // theming, icons etc
 include(":core:common") // utils
 include(":core:ui") // components
-include(":core:data") // dummy data / fake data
-include(":core:model") // data models
 include(":feature:login")
 include(":feature:signup")
 include(":feature:post")

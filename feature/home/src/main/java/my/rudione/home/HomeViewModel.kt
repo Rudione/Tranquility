@@ -80,14 +80,20 @@ class HomeViewModel(
                 getPostsUseCase(page, Constants.DEFAULT_REQUEST_PAGE_SIZE)
             },
             onSuccess = { posts, page ->
-                postsFeedUiState = if (posts.isEmpty()) {
-                    postsFeedUiState.copy(endReached = true)
+                if (posts.isEmpty()) {
+                    postsFeedUiState = postsFeedUiState.copy(endReached = true)
                 } else {
-                    if (page == Constants.INITIAL_PAGE_NUMBER) {
-                        postsFeedUiState = postsFeedUiState.copy(post = emptyList())
+                    val currentPosts = if (page == Constants.INITIAL_PAGE_NUMBER) {
+                        emptyList()
+                    } else {
+                        postsFeedUiState.post
                     }
-                    postsFeedUiState.copy(
-                        post = postsFeedUiState.post + posts,
+                    val mergedPosts = (currentPosts + posts)
+                        .distinctBy { it.postId }
+                        .sortedByDescending { it.createdAt }
+
+                    postsFeedUiState = postsFeedUiState.copy(
+                        post = mergedPosts,
                         endReached = posts.size < Constants.DEFAULT_REQUEST_PAGE_SIZE
                     )
                 }

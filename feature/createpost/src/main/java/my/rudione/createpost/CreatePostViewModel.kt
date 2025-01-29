@@ -76,7 +76,7 @@ class CreatePostViewModel(
         uiState = uiState.copy(caption = input)
     }
 
-    fun generateText(inputText: String) {
+    private fun generateText(inputText: String) {
         generativeState = GenerativePostUiState(isLoading = true, errorMessage = null)
 
         val prompt = "Напиши за inputText'ом дуже короткий текст для блогу, де максимум написаних символів менше 120. Повторювати запит не треба. Відповідай швидко. $inputText"

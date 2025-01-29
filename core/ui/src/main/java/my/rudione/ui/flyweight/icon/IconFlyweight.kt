@@ -22,7 +22,8 @@ class IconFlyweight(
     @Composable
     override fun Render(color: Color, size: Dp, modifier: Modifier) {
         Icon(
-            imageVector = icon, tint = color,
+            imageVector = icon,
+            tint = color,
             modifier = Modifier.size(size),
             contentDescription = null
         )
