@@ -1,5 +1,6 @@
 package my.rudione.ui.components
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -25,9 +26,11 @@ fun AppBar(
     navigator: Navigator,
     appBar: String,
     shouldShowNavigationIcon: (Screen) -> Boolean,
-    actionVisible: Boolean = true
+    actionVisible: Boolean = true,
+    onClickNavigationProfile: () -> Unit,
 ) {
     val currentDestination = navigator.lastItem
+
 
     Surface(
         modifier = modifier,
@@ -40,7 +43,7 @@ fun AppBar(
             modifier = modifier,
             actions = {
                 AnimatedVisibility(visible = actionVisible) {
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = onClickNavigationProfile) {
                         Icon(
                             painter = painterResource(id = TranquilityIcons.PERSON_CIRCLE_ICON),
                             contentDescription = null

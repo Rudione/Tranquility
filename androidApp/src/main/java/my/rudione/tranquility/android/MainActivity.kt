@@ -27,6 +27,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.Navigator
 import com.google.accompanist.systemuicontroller.SystemUiController
@@ -39,6 +40,7 @@ import my.rudione.designsystem.theme.TranquilityTheme
 import my.rudione.home.navigation.HomeNavigation
 import my.rudione.login.navigation.LoginNavigation
 import my.rudione.signup.navigation.SignUpNavigation
+import my.rudione.ui.SharedScreen
 import my.rudione.ui.components.AppBar
 import org.koin.android.ext.android.inject
 
@@ -83,6 +85,9 @@ class MainActivity : ComponentActivity() {
                     else -> SignUpNavigation()
                 }
 
+                val userId = (uiState as? MainActivityUiState.Success)?.currentUser?.id
+                val pushToProfileScreen = rememberScreen(SharedScreen.ProfileScreen(userId ?: 0))
+
                 Navigator(startScreen) { navigator ->
                     Scaffold(
                         topBar = {
@@ -90,7 +95,10 @@ class MainActivity : ComponentActivity() {
                                 navigator = navigator,
                                 appBar = stringResource(id = getTitleAppBar(navigator.lastItem)),
                                 shouldShowNavigationIcon = { shouldShowNavigationIcon(navigator.lastItem) },
-                                actionVisible = (navigator.lastItem is HomeNavigation)
+                                actionVisible = (navigator.lastItem is HomeNavigation),
+                                onClickNavigationProfile = {
+                                    navigator.push(pushToProfileScreen)
+                                }
                             )
                         },
                         floatingActionButton = {

@@ -44,6 +44,7 @@ import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -71,7 +72,7 @@ import my.rudione.ui.components.ScreenLevelLoadingErrorView
 import my.rudione.ui.components.ScreenLevelLoadingView
 import my.rudione.ui.components.loadingMoreItem
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun PostDetailScreen(
     modifier: Modifier = Modifier,
@@ -79,7 +80,7 @@ fun PostDetailScreen(
     commentsUiState: CommentsUiState,
     postId: Long,
     onProfileNavigation: (userId: Long) -> Unit,
-    onUiAction: (PostDetailUiAction) -> Unit,
+    onUiAction: (PostDetailUiAction) -> Unit
 ) {
     val listState = rememberLazyListState()
 
@@ -98,8 +99,10 @@ fun PostDetailScreen(
 
     var commentText by rememberSaveable { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
+    var openBottomSheet by rememberSaveable { mutableStateOf(false) }
+    var skipPartiallyExpanded by rememberSaveable { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = skipPartiallyExpanded)
 
-    val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     var selectedComment by rememberSaveable(stateSaver = postCommentSaver) {
         mutableStateOf(null)
@@ -145,10 +148,9 @@ fun PostDetailScreen(
                     CommentListItem(
                         comment = it,
                         onProfileClick = {
-                            //onProfileClick(it.userId)
                         },
-                        onMoreIconClick = {
-                            selectedComment = it
+                        onMoreIconClick = { comment ->
+                            selectedComment = comment
                             scope.launch { sheetState.show() }
                         }
                     )
@@ -177,15 +179,16 @@ fun PostDetailScreen(
         }
     }
 
-    if (selectedComment != null) {
+    if (openBottomSheet) {
         ModalBottomSheet(
             sheetState = sheetState,
-            onDismissRequest = { scope.launch { sheetState.hide() } },
+            onDismissRequest = { openBottomSheet = false },
         ) {
             selectedComment?.let { postComment ->
                 CommentMoreActionsBottomSheetContent(
                     comment = postComment,
-                    canDeleteComment = postComment.userId == postUiState.post?.userId || postComment.isOwner,
+                    canDeleteComment =
+                    postComment.userId == postUiState.post?.userId || postComment.isOwner,
                     onDeleteCommentClick = { comment ->
                         scope.launch { sheetState.hide() }.invokeOnCompletion {
                             if (!sheetState.isVisible) {
@@ -195,9 +198,7 @@ fun PostDetailScreen(
                         }
                     },
                     onNavigateToProfile = { userId ->
-                        scope.launch {
-                            sheetState.hide()
-                        }.invokeOnCompletion {
+                        scope.launch { sheetState.hide() }.invokeOnCompletion {
                             if (!sheetState.isVisible) {
                                 selectedComment = null
                                 onProfileNavigation(userId)
