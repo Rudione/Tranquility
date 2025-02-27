@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -79,14 +80,13 @@ fun CommentListItem(
                         .alignByBaseline()
                         .weight(1f)
                 )
-                roundMoreIcon.Render(
-                    color = if (isSystemInDarkTheme()) {
-                        DarkGray
-                    } else {
-                        LightGray
-                    },
-                    size = 24.dp,
-                    modifier = modifier.clickable { onMoreIconClick(comment) }
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = my.rudione.designsystem.R.drawable.round_more_horizontal),
+                    contentDescription = "More",
+                    tint = if (isSystemInDarkTheme()) DarkGray else LightGray,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable { onMoreIconClick(comment) }
                 )
             }
 

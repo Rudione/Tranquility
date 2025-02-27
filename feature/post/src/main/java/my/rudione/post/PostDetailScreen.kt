@@ -54,7 +54,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import my.rudione.common.fake_data.Comment
 import my.rudione.common.fake_data.sampleComments
 import my.rudione.common.fake_data.sampleSamplePosts
 import my.rudione.common.util.Constants
@@ -148,9 +147,11 @@ fun PostDetailScreen(
                     CommentListItem(
                         comment = it,
                         onProfileClick = {
+                            onProfileNavigation(it)
                         },
                         onMoreIconClick = { comment ->
                             selectedComment = comment
+                            openBottomSheet = true
                             scope.launch { sheetState.show() }
                         }
                     )
@@ -194,6 +195,7 @@ fun PostDetailScreen(
                             if (!sheetState.isVisible) {
                                 onUiAction(PostDetailUiAction.RemoveCommentAction(comment))
                                 selectedComment = null
+                                openBottomSheet = false
                             }
                         }
                     },
@@ -201,6 +203,7 @@ fun PostDetailScreen(
                         scope.launch { sheetState.hide() }.invokeOnCompletion {
                             if (!sheetState.isVisible) {
                                 selectedComment = null
+                                openBottomSheet = false
                                 onProfileNavigation(userId)
                             }
                         }

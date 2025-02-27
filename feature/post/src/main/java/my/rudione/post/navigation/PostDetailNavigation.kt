@@ -24,7 +24,6 @@ class PostDetailNavigation(
     override fun Content() {
         val viewModel: PostDetailViewModel = koinScreenModel()
         val navigator = LocalNavigator.currentOrThrow
-        val postHomeScreen = rememberScreen(SharedScreen.HomeScreen)
 
         Scaffold(
             topBar = {},
