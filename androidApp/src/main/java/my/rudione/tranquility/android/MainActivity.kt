@@ -86,6 +86,7 @@ class MainActivity : ComponentActivity() {
                 }
 
                 val userId = (uiState as? MainActivityUiState.Success)?.currentUser?.id
+                Log.d("MainActivity", "userId: $userId")
                 val pushToProfileScreen = rememberScreen(SharedScreen.ProfileScreen(userId ?: 0))
 
                 Navigator(startScreen) { navigator ->
@@ -98,7 +99,8 @@ class MainActivity : ComponentActivity() {
                                 actionVisible = (navigator.lastItem is HomeNavigation),
                                 onClickNavigationProfile = {
                                     navigator.push(pushToProfileScreen)
-                                }
+                                },
+                                onClickBack = { navigator.pop() }
                             )
                         },
                         floatingActionButton = {

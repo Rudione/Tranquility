@@ -125,7 +125,9 @@ fun PostDetailScreen(
                 item(key = Constants.POST_ITEM_KEY) {
                     PostListItem(
                         post = postUiState.post,
-                        onProfileClick = {},
+                        onProfileClick = {
+                            onProfileNavigation(it)
+                        },
                         onLikeClick = { onUiAction(PostDetailUiAction.LikeOrDislikePostAction(it)) },
                         onCommentClick = {}
                     )

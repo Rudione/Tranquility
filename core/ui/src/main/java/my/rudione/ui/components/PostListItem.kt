@@ -121,7 +121,7 @@ fun PostHeader(
     name: String,
     profileUrl: String?,
     date: String,
-    onProfileClick: () -> Unit
+    onProfileClick: () -> Unit,
 ) {
     Row(
         modifier = modifier
@@ -179,6 +179,9 @@ fun PostHeader(
                 DarkGray
             } else {
                 LightGray
+            },
+            modifier = modifier.clickable {
+
             }
         )
     }

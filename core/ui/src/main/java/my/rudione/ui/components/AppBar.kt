@@ -28,6 +28,7 @@ fun AppBar(
     shouldShowNavigationIcon: (Screen) -> Boolean,
     actionVisible: Boolean = true,
     onClickNavigationProfile: () -> Unit,
+    onClickBack: () -> Unit
 ) {
     val currentDestination = navigator.lastItem
 
@@ -53,7 +54,7 @@ fun AppBar(
             },
             navigationIcon = {
                 if (shouldShowNavigationIcon(currentDestination)) {
-                    IconButton(onClick = { navigator.pop() }) {
+                    IconButton(onClick = onClickBack) {
                         Icon(
                             painter = painterResource(id = TranquilityIcons.ROUND_ARROW_BACK),
                             contentDescription = null
